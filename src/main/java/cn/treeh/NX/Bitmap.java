@@ -19,6 +19,8 @@ public class Bitmap {
         return 4 * width * height;
     }
     public byte[] data(){
+        if(pos<0)
+            return new byte[0];
         synchronized (f.fileReader) {
             try {
                 f.seek(pos);

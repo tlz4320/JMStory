@@ -9,3 +9,7 @@ Therefore, I could develop a platform independent clean MS by Java by using LWJG
 
 
 Thank JournalStory again, I write follow the idea of that.
+
+Any thing totally in java. Music used jmp123 NX use NolifeNX but write by my self(not test all but test several bitmap and string, and change string format to UTF read, can't compatible with original NolifeNX. No license now, if necessary, please follow jmp123 license.
+
+

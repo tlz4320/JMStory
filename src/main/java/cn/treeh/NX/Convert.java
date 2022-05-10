@@ -164,9 +164,9 @@ public class Convert{
         void writeInt(int v){
             try {
                 fileWriter.write(v & 255);
-                fileWriter.write(v >>> 8 & 255);
-                fileWriter.write(v >>> 16 & 255);
-                fileWriter.write(v >>> 24 & 255);
+                fileWriter.write((v >>> 8) & 255);
+                fileWriter.write((v >>> 16) & 255);
+                fileWriter.write((v >>> 24) & 255);
             }catch (Exception e){
                 throw new RuntimeException(e);
             }
@@ -207,30 +207,17 @@ public class Convert{
                 throw new RuntimeException(e);
             }
         }
-        int readUnsignedByte(){
-            try {
-                return fileReader.readUnsignedByte();
-            }catch (Exception e){
-                throw new RuntimeException(e);
-            }
-        }
         long getFilePointer(){
             try {
-                return fileReader.getFilePointer();
+                return fileWriter.getFilePointer();
             }catch (Exception e){
                 throw new RuntimeException(e);
             }
-        }
-        long readUInt(){
-            int res = 0;
-            res = readUnsignedByte() | (readUnsignedByte() << 8) |
-                    (readUnsignedByte() << 16) | (readUnsignedByte() << 24);
-            return Integer.toUnsignedLong(res);
         }
 
         void seek(long pos){
             try{
-                fileReader.seek(pos);
+                fileWriter.seek(pos);
             }catch (Exception e){
                 throw new RuntimeException(e);
             }
@@ -274,7 +261,9 @@ public class Convert{
         try {
             fileReader = new InFile();
             fileReader.fileReader = new RandomAccessFile(filename, "r");
+            fileWriter = new OutFile();
             fileWriter.fileWriter = new RandomAccessFile(filename.replace(".wz", ".nx"), "rw");
+            fileWriter.seek(0);
             parse_file();
             outputFile();
             write_nodes();
@@ -517,12 +506,12 @@ public class Convert{
             bm.data = fileReader.getFilePointer();
             bm.key = u8Key;
             bitmaps.add(bm);
-            n.data += ((long)readCInt()) << 32;
-            n.data += ((long)readCInt()) << 48;
+            n.data += (Integer.toUnsignedLong(readCInt())) << 32;
+            n.data += (Integer.toUnsignedLong(readCInt())) << 48;
         } else if(st.equals("Shape2D#Vector2D")){
             n.type = type.vector;
             n.data = readCInt();
-            n.data = ((long)readCInt()) << 32;
+            n.data = (Integer.toUnsignedLong(readCInt())) << 32;
         } else if(st.equals("Shape2D#Convex2D")){
             int count = readCInt();
             int ni = nodes.size();
@@ -543,7 +532,7 @@ public class Convert{
             audio a = new audio();
             fileReader.skipBytes(1);
             a.length = readCInt() + 82;
-            n.data += ((long)a.length) << 32;
+            n.data += (a.length) << 32;
             readCInt();
             a.data = fileReader.getFilePointer();
             audios.add(a);
@@ -838,18 +827,25 @@ public class Convert{
         offset += 52;
         offset += 0x10 - (offset & 0xf);
         node_offset = offset;
+        fileWriter.writeLong(node_offset);
+
         //24 for add length
         offset += nodes.size() * 20L;
         offset += 0x10 - (offset & 0xf);
         string_table_offset = offset;
+        fileWriter.writeInt(strings.size());
+        fileWriter.writeLong(string_table_offset);
         offset += strings.size() * 8L;
         offset += 0x10 - (offset & 0xf);
         string_offset = offset;
         //the reason I write string here is for java UTF support
         //In this way I could get real offset for Unicode
+        long nowPos = fileWriter.getFilePointer();
         write_strings();
+        fileWriter.seek(nowPos);
         offset += 0x10 - (offset & 0xf);
         audio_table_offset = offset;
+
         offset += audios.size() * 8L;
         offset += 0x10 - (offset & 0xf);
 
@@ -861,15 +857,13 @@ public class Convert{
             offset += a.length;
         }
         bitmap_offset = offset;
+
     }
     void outputFile() throws Exception{
         O.ptln("Begin to output");
-        calculate_offsets();
         fileWriter.writeInt(0x34474B50);
         fileWriter.writeInt(nodes.size());
-        fileWriter.writeLong(node_offset);
-        fileWriter.writeInt(strings.size());
-        fileWriter.writeLong(string_table_offset);
+        calculate_offsets();
         fileWriter.writeInt(bitmaps.size());
         fileWriter.writeLong(bitmap_table_offset);
         fileWriter.writeInt(audios.size());
@@ -917,35 +911,35 @@ public class Convert{
             fileWriter.write(tmp);
         }
     }
-    void write_bitmaps() throws Exception{
+    void write_bitmaps() throws Exception {
         fileWriter.seek(bitmap_table_offset);
-        for(int index = 0; index < bitmaps.size(); index++){
+        for (int index = 0; index < bitmaps.size(); index++) {
             bitmap b = bitmaps.get(index);
             fileWriter.writeLong(bitmap_offset);
             fileReader.seek(b.data);
             int width = readCInt();
             int height = readCInt();
-            if(width < 0|| height < 0)
+            if (width < 0 || height < 0)
                 E("Invalid image size");
             int f1 = readCInt();
             int f2 = fileReader.readUnsignedByte();
             long n1 = fileReader.readUInt();
-            if(n1 > 0)
+            if (n1 > 0)
                 E("n1 of image not zero");
-            int length = (int)fileReader.readUInt();
+            int length = (int) fileReader.readUInt();
             int n2 = fileReader.readUnsignedByte();
-            if(n2 != 0)
+            if (n2 != 0)
                 E("n2 of of image not zero");
             int size = width * height * 4;
             long biggest = Math.max(size, length);
-            byte[] input = new byte[(int)biggest];
-            byte[] output = new byte[(int)biggest];
+            byte[] input = new byte[(int) biggest];
+            byte[] output = new byte[(int) biggest];
             int[] key = b.key;
             int decompressed = 0;
             fileReader.fileReader.read(input, 0, length);
-            if((decompressed = decompress(input, output, length)) == -1 &&
-                    ((length = decrypt(input, length, key)) != -1 ||
-                            (decompressed = decompress(input, output, length)) == -1)){
+            if ((decompressed = decompress(input, output, length)) == -1 &&
+                    ((length = decrypt(input, length, key)) == -1 ||
+                            (decompressed = decompress(input, output, length)) == -1)) {
                 O.ptEln("Unable to inflate error data");
                 f1 = 2;
                 f2 = 0;
@@ -972,24 +966,27 @@ public class Convert{
                     E("Unknown image type!");
             }
             int pixels = width * height;
-            switch (f2){
-                case 0: break;
-                case 4: pixels /=256; break;
+            switch (f2) {
+                case 0:
+                    break;
+                case 4:
+                    pixels /= 256;
+                    break;
                 default:
                     E("Unknown image format");
             }
-            if(check != pixels * 4){
-                if(f1 != 2 || f2 != 0)
+            if (check != pixels * 4) {
+                if (f1 != 2 || f2 != 0)
                     E("Size mismatch");
             }
-            switch (f1){
+            switch (f1) {
                 case 1:
                     make4444(input, output, pixels);
                     break;
                 case 2:
                     tmp = input;
                     input = output;
-                    output = input;
+                    output = tmp;
                     break;
                 case 513:
                     make565(input, output, pixels);
@@ -1002,8 +999,8 @@ public class Convert{
             }
             tmp = input;
             input = output;
-            output = input;
-            switch (f2){
+            output = tmp;
+            switch (f2) {
                 case 0:
                     break;
                 case 4:
@@ -1011,7 +1008,7 @@ public class Convert{
                     scale(input, output, width, height);
                     tmp = input;
                     input = output;
-                    output = input;
+                    output = tmp;
                     break;
             }
             ByteBuffer bf = BufferUtils.createByteBuffer(length);
@@ -1022,7 +1019,10 @@ public class Convert{
             long nowPos = fileWriter.getFilePointer();
             fileWriter.seek(bitmap_offset);
             fileWriter.writeLong(final_size);
+            if (output.length < final_size)
+                output = new byte[final_size];
             final_out.get(output, 0, final_size);
+
             fileWriter.write(output);
             bitmap_offset += 4 + final_size;
             fileWriter.seek(nowPos);
@@ -1049,19 +1049,19 @@ public class Convert{
     void make565(byte[] input, byte[] output, int pixels) {
         pixels *= 4;
         for (int i = 0; i < pixels; i += 4) {
-            output[i] = (byte) table5[input[i] & 31];
-            output[i + 1] = (byte) table5[input[i] >> 5 + input[1] & 7];
-            output[i + 2] = (byte) table5[input[i + 1] >> 3];
+            output[i] = (byte) (table5[Byte.toUnsignedInt(input[i]) & 31]& 0xFF);
+            output[i + 1] = (byte) (table5[Byte.toUnsignedInt(input[i]) >>> 5 + input[1] & 7]& 0xFF);
+            output[i + 2] = (byte) (table5[Byte.toUnsignedInt(input[i + 1]) >>> 3]& 0xFF);
             output[i + 3] = (byte)255;
         }
     }
     void make4444(byte[] input, byte[] output, int pixels) {
         pixels *= 4;
         for (int i = 0; i < pixels; i += 4) {
-            output[i] = (byte) table4[input[i] & 0xF];
-            output[i + 1] = (byte) table4[input[i] >> 4];
-            output[i + 2] = (byte) table4[input[i + 1] & 0xF];
-            output[i + 3] = (byte) table4[input[i + 1] >> 4];
+            output[i] = (byte) (table4[Byte.toUnsignedInt(input[i]) & 0xF] & 0xFF);
+            output[i + 1] = (byte) (table4[Byte.toUnsignedInt(input[i]) >>> 4]& 0xFF);
+            output[i + 2] = (byte) (table4[Byte.toUnsignedInt(input[i + 1]) & 0xF]& 0xFF);
+            output[i + 3] = (byte) (table4[Byte.toUnsignedInt(input[i + 1]) >>> 4]& 0xFF);
         }
     }
     int decompress(byte[] input, byte[] output, int length){
@@ -1083,14 +1083,15 @@ public class Convert{
         byte[] ori = Arrays.copyOf(input, input.length);
 
         for(int i = 0; i < length - 4; ){
-            long blen = ori[i] + (ori[i + 1] << 8) +
-                    (ori[i + 2] << 16) +
-                    (ori[i + 3] << 24);
+            long blen = Integer.toUnsignedLong((ori[i] & 255) |
+                    (Byte.toUnsignedInt(ori[i + 1]) << 8) +
+                    (Byte.toUnsignedInt(ori[i + 2]) << 16) +
+                    (Byte.toUnsignedInt(ori[i + 3]) << 24));
             i += 4;
             if(i + blen > length)
                 return -1;
             for(int j = 0; j < blen; j++){
-                input[p + j] = (byte) (ori[i + j] ^ key[j]);
+                input[p + j] = (byte) (ori[i + j] ^ key[j] & 0xFF);
             }
             i += blen;
             p += blen;

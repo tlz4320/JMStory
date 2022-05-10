@@ -93,11 +93,9 @@ public class Node {
             long p = f.node_offset + m_data.children * 20L;
             long n = m_data.num;
             long p2, n2;
-            int l1, len, l2 = s.length();
-            char chr;
+            int cmp, l2 = s.length();
             boolean z = false;
             long t = f.string_offset, sl;
-            char[] str = s.toCharArray();
             for (; ; ) {
                 if (n == 0)
                     return new Node(-1, f);
@@ -108,32 +106,15 @@ public class Node {
                     sl = t + f.readInt() * 8L;
                     f.seek(sl);
                     f.seek(f.readLong());
-                    l1 = f.readUByte();
-                    f.readUByte();
-                    z = false;
-                    len = Math.min(l2, l1);
-                    for (int index = 0; index < len; index++) {
-                        char c = str[index];
-                        chr = (char) f.readUByte();
-                        if (chr > c) {
-                            n = n2;
-                            z = true;
-                            break;
-                        } else if (chr < c) {
-                            p = p2 + 20;
-                            n -= n2 + 1;
-                            z = true;
-                            break;
-                        }
-                    }
-                    if (!z) {
-                        if (l1 < l2) {
-                            p = p2 + 20;
-                            n -= n2 + 1;
-                        } else if (l2 < l1) {
-                            n = n2;
-                        } else
-                            return new Node(p2, f);
+                    String name = f.fileReader.readUTF();
+                    cmp = s.compareTo(name);
+                    if (cmp < 0) {
+                        n = n2;
+                    } else if (cmp > 0) {
+                        p = p2 + 20;
+                        n -= n2 + 1;
+                    } else {
+                        return new Node(p2, f);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

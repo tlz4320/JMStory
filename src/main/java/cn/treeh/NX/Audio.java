@@ -20,6 +20,8 @@ public class Audio {
         return pos == audio.pos;
     }
     public byte[] data(int skip){
+        if(pos < 0)
+            return new byte[0];
         synchronized (f.fileReader) {
             f.seek(pos);
             f.skip(skip);

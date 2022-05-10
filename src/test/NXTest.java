@@ -13,10 +13,15 @@ import static org.lwjgl.openal.ALC10.*;
 
 public class NXTest {
     public static void main(String[] args) {
-        File file = new File("D:\\program\\project\\JourneyClient\\src\\Sound.nx");
+        File file = new File("D:\\1\\mxd\\冒险岛online\\Etc.nx");
         Node node = file.getNode();
-        Node n = node.subNode("BgmUI.img").subNode("Title");
-        byte[] tmp = n.getAudio().data(0);
+        Node n = node.subNode("SpeedAnimationQuiz.img");
+        n = n.subNode("BeijingOlympic");
+        n = n.subNode("AniQuiz");
+        n = n.subNode("1");
+        n = n.subNode("ani");
+        n = n.subNode("0");
+        byte[] tmp = n.getBitmap().data();
         try {
             ByteBuffer bf = BufferUtils.createByteBuffer(tmp.length);
             bf.put(tmp);
