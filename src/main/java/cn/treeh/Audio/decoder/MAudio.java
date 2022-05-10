@@ -42,7 +42,7 @@ public class MAudio implements IAudio {
 //			dateline.open(af, bufferSize);
 //			// dateline.open(af);
 //		} catch (LineUnavailableException e) {
-//			System.out.println("鍒濆鍖栭煶棰戣緭鍑哄け璐ャ₿);
+//			System.out.println("鍒濆鍖栭煶棰戣緭鍑哄け璐ャ€?);
 //			return false;
 //		}
 

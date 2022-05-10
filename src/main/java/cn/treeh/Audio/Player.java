@@ -1,4 +1,4 @@
 package cn.treeh.Audio;
 
-public class Decoder {
+public class Player {
 }

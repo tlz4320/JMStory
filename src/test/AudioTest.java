@@ -1,3 +1,4 @@
+import cn.treeh.Audio.decoder.Audio;
 import cn.treeh.Audio.decoder.Header;
 import cn.treeh.Audio.decoder.MAudio;
 import cn.treeh.Audio.decoder.MiniDecoder;
@@ -22,34 +23,35 @@ import static org.lwjgl.openal.ALC10.*;
 
 public class AudioTest {
     public static void main(String[] args) {
-        File file = new File("D:\\program\\project\\JourneyClient\\src\\Sound.nx");
+        File file = new File("D:\\1\\mxd\\冒险岛online\\Sound.nx");
         Node node = file.getNode();
         Node n = node.subNode("BgmUI.img").subNode("Title");
         byte[] tmp = n.getAudio().data(82);
-        MiniDecoder player = new MiniDecoder(new MAudio());
+        MiniDecoder player = new MiniDecoder(new Audio());
         player.open(tmp);
         player.run();
-        LinkedList<byte[]> res = ((MAudio)player.getAudio()).dataline;
-        int size = 0;
-        for(byte[] b : res)
-            size += b.length;
-        byte[] lr = new byte[size];
-        int pos = 0;
-        for(byte[] b: res){
-            System.arraycopy(b, 0, lr, pos, b.length);
-            pos += b.length;
-        }
-        Header h = player.getHeader();
-        AudioFormat af = new AudioFormat(h.getSamplingRate(), 16, h.getChannels(), true, false);
-        try {
-            SourceDataLine dataLine = AudioSystem.getSourceDataLine(af);
-
-            dataLine.open(af, lr.length);
-            int ttt = dataLine.write(lr, 0, lr.length);
-            dataLine.start();
-        }catch (Exception e){
-
-        }
+        while(true){}
+//        LinkedList<byte[]> res = ((MAudio)player.getAudio()).dataline;
+//        int size = 0;
+//        for(byte[] b : res)
+//            size += b.length;
+//        byte[] lr = new byte[size];
+//        int pos = 0;
+//        for(byte[] b: res){
+//            System.arraycopy(b, 0, lr, pos, b.length);
+//            pos += b.length;
+//        }
+//        Header h = player.getHeader();
+//        AudioFormat af = new AudioFormat(h.getSamplingRate(), 16, h.getChannels(), true, false);
+//        try {
+//            SourceDataLine dataLine = AudioSystem.getSourceDataLine(af);
+//
+//            dataLine.open(af, lr.length);
+//            int ttt = dataLine.write(lr, 0, lr.length);
+//            dataLine.start();
+//        }catch (Exception e){
+//
+//        }
 //        ByteBuffer bf = BufferUtils.createByteBuffer(lr.length);
 //        bf.put(lr);
 //        long device = alcOpenDevice((ByteBuffer)null);
@@ -62,6 +64,5 @@ public class AudioTest {
 //        int source = alGenBuffers();
 //        alSourcef(source, AL_BUFFER, buffer);
 //        alSourcePlay(source);
-        while(true){}
     }
 }

@@ -1,5 +1,7 @@
 package cn.treeh.Audio.decoder;
 
+import cn.treeh.Util.O;
+
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -36,12 +38,38 @@ public class MiniDecoder extends AbstractDecoder {
             return -1;
         }
     }
+    boolean stop = false;
+    boolean stopped = false;
+    public void stop(){
+        stop = true;
+    }
+    public void change(byte[] data){
+        stop();
+        while(!stopped);
+        stopped = true;
+        fileStream = new ByteArrayInputStream(data);
+        stop = false;
+        run();
+    }
 
     @Override
-    protected void done() {
-        if (fileStream != null) {
-            try { fileStream.close(); } catch (IOException e) { }
+    protected boolean cooperate() {
+        return stop;
+    }
+    @Override
+    public void reset(){
+        try {
+            fileStream.reset();
+        }catch (Exception e){
+            e.printStackTrace();
         }
+    };
+    @Override
+    protected void done() {
+        if (fileStream != null && !repeat) {
+            try { fileStream.close(); } catch (IOException e) {e.printStackTrace(); }
+        }
+        stopped = true;
     }
 
 }

@@ -609,7 +609,7 @@ public class Convert{
         node n = orderedNode[node];
         if(n.type == type.uol){
             uol_path.push(node);
-            uols.push((LinkedList<Integer>) uol_path.clone());
+            uols.add((LinkedList<Integer>) uol_path.clone());
             uol_path.pop();
         }
         else if (n.num != 0){
@@ -631,6 +631,7 @@ public class Convert{
         return 0;
     }
     boolean resolve_uol(LinkedList<Integer> uol) {
+        uol = (LinkedList<Integer>)uol.clone();
         node n = orderedNode[uol.pop()];
         if (n.type != type.uol)
             E("None UOL get into UOL");
@@ -647,6 +648,7 @@ public class Convert{
                 b = ++i;
             }
         }
+
         uol.push(getChild(uol.getFirst(), s.substring(b)));
         if (uol.getFirst() == 0)
             return false;
@@ -674,7 +676,7 @@ public class Convert{
         String s = rStrings.get((int)n.name);
         if(s.equals(str)){
             link_path.push(link_node);
-            links.push((LinkedList<Integer>) link_path.clone());
+            links.add((LinkedList<Integer>) link_path.clone());
             link_path.pop();
         }
         else if(n.num != 0){
@@ -695,6 +697,7 @@ public class Convert{
         return 0;
     }
     boolean resolve_source(LinkedList<Integer> link){
+        link = (LinkedList<Integer>)link.clone();
         node n = orderedNode[link.pop()];
         String s = rStrings.get((int)n.data);
         String[] parts = s.split("[/]");
@@ -714,6 +717,7 @@ public class Convert{
         O.ptEln("Failed to find " + str + " for [" + rStrings.get(n.data) + "].");
     }
     boolean resolve_outlink(LinkedList<Integer> link){
+        link = (LinkedList<Integer>)link.clone();
         node n = orderedNode[link.pop()];
         String s = rStrings.get((int)n.data);
         String[] parts = s.split("[/]");
@@ -730,6 +734,7 @@ public class Convert{
         return true;
     }
     boolean resolve_inlink(LinkedList<Integer> link){
+        link = (LinkedList<Integer>)link.clone();
         node n = orderedNode[link.pop()];
         String s = rStrings.get((int)n.data);
         String[] parts = s.split("[/]");
@@ -1101,6 +1106,6 @@ public class Convert{
 
 
     public static void main(String[] args) {
-        new Convert().convert("D:\\1\\mxd\\冒险岛online\\Etc.wz");
+        new Convert().convert("D:\\1\\mxd\\冒险岛online\\Sound.wz");
     }
 }
