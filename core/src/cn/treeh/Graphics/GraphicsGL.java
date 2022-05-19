@@ -4,8 +4,6 @@ package cn.treeh.Graphics;
 import org.lwjgl.BufferUtils;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL.createCapabilities;
