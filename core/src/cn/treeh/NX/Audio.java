@@ -3,8 +3,8 @@ package cn.treeh.NX;
 public class Audio {
     long pos;
     int len;
-    File f;
-    public Audio(long pos, int len, File f){
+    NxFile f;
+    public Audio(long pos, int len, NxFile f){
         this.pos = pos;
         this.len = len;
         this.f = f;

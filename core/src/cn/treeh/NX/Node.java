@@ -61,9 +61,9 @@ public class Node {
     }
 
     Data m_data = null;
-    File f;
+    NxFile f;
 
-    public Node(long m_data_pos, File f) {
+    public Node(long m_data_pos, NxFile f) {
         try {
             this.f = f;
             if (m_data_pos == -1)

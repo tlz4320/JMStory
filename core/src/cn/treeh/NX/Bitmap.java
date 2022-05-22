@@ -8,8 +8,8 @@ import java.nio.ByteBuffer;
 public class Bitmap {
     long pos;
     int width, height;
-    File f;
-    public Bitmap(long pos, int width, int height, File f){
+    NxFile f;
+    public Bitmap(long pos, int width, int height, NxFile f){
         this.pos = pos;
         this.width = width;
         this.height = height;
