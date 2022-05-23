@@ -22,6 +22,7 @@ public class Window {
 //        String vs_source = Gdx.files.internal("vshader.glsl").readString();
 //        String fs_source = Gdx.files.internal("fshader.glsl").readString();;
 //        ShaderProgram res = new ShaderProgram(vs_source, fs_source);
+//
 //        res.setUniformf("yoffset", Configure.VIEW_Y_OFFSET);
 //        res.setUniformf("fontregion", 800);
 //        res.setUniformf("atlassize", new Vector2(8192, 8192));

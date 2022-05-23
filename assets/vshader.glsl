@@ -9,5 +9,7 @@ varying vec2 v_texCoords;
 void main(void) {
 	v_color = a_color;
 	v_texCoords = a_texCoord0;
-	gl_Position = u_projTrans * a_position;
+	float x = a_position.x + (screensize.x / 2);
+	float y = a_position.y + (screensize.y / 2);
+	gl_Position = u_projTrans * vec4(x, y, 0 , 1);
 }
