@@ -102,7 +102,7 @@ public class Text {
                         {
                             //skip #L
                             int id = Integer.parseInt(text.substring(first + 2, last));
-                            Words words = new Words();
+//                            Words words = new Words();
                             first = text.indexOf("#l", last + 1);
                             //skip #
 //                            words.selection = new Selection(text.substring(last + 1, first), font, maxWidth, id);
