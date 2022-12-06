@@ -89,7 +89,10 @@ public class NxFile {
         res += readInt() << 32;
         return res;
     }
+    Node root;
     public Node getNode(){
-        return new Node(node_offset, this);
+        if(root == null)
+            root = new Node(node_offset, this);
+        return root;
     }
 }

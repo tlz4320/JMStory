@@ -1,27 +1,8 @@
 package cn.treeh.NX;
 
 public class Node {
-    /*   struct node::data {
-        uint32_t const name;
-        uint32_t const children;
-        uint16_t const num;
-        node::type const type;
-        union {
-            int64_t const ireal;
-            double const dreal;
-            uint32_t const string;
-            int32_t const vector[2];
-            struct {
-                uint32_t index;
-                uint16_t width;
-                uint16_t height;
-            } const bitmap;
-            struct {
-                uint32_t index;
-                uint32_t length;
-            } const audio;
-        };
-    };*/
+    //或许可以搞一个Cache
+
     enum Type {
         none(0),
         integer(1),
@@ -81,15 +62,23 @@ public class Node {
             throw new RuntimeException(e);
         }
     }
-
-    private Node get_child(String s) {
+    private Node get_child(String s){
+        String[] ss = s.split("[/]");
+        Node res = this;
+        for(String sss : ss)
+            if(sss.trim().length() != 0) {
+                res = res._get_child(sss);
+            }
+        return res;
+    }
+    private Node _get_child(String s) {
         //I can't guarantee this all file access won't have thread-safe problem
         //therefore add lock before to make it safe
         //I think it won't influence performance badly
         //Because except get_child need multi-seek call, other function only need seek once and read once.
         synchronized (f.fileReader) {
             if (m_data == null)
-                return this;//涓嶈鏂板缓浜?鐩存帴杩斿洖褰撳墠
+                return this;//保证程序不要出错
             long p = f.node_offset + m_data.children * 20L;
             long n = m_data.num;
             long p2, n2;
@@ -126,7 +115,39 @@ public class Node {
     public Node subNode(Object o) {
         return get_child(o.toString());
     }
-
+    public long getInt(){
+        return m_data.union;
+    }
+    public double getReal(){
+        return Double.longBitsToDouble(m_data.union);
+    }
+    public String getString(String def){
+        if(m_data == null)
+            return def;
+        switch (m_data.type){
+            case none:
+            case vector:
+            case bitmap:
+            case audio:
+                return def;
+            case integer:
+                return getInt() + "";
+            case real:
+                return getReal() + "";
+            case string: {
+                synchronized (f.fileReader) {
+                    long sl = f.string_offset + 8 * m_data.union;
+                    f.seek(sl);
+                    try {
+                        return f.fileReader.readUTF();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return def;
+    }
     public int x() {
         return m_data != null && m_data.type == Type.vector ? (int) m_data.union : 0;
     }

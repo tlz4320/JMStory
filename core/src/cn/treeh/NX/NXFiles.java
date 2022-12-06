@@ -3,17 +3,16 @@ package cn.treeh.NX;
 import java.util.HashMap;
 
 public class NXFiles {
-    static HashMap<String, NxFile> files;
-    static String[] fileName = {
-            "UI",
-            "Map",
-            "Mob",
-            "Audio"
-    };
+    static NxFile Item, Audio, Mob, UI, Map, Sound, String;
     static void init(){
-        for(String file : fileName){
-            files.put(file + ".nx",
-                    new NxFile(file));
-        }
+        Item = new NxFile("Item.nx");
+        String = new NxFile("String.nx");
+
+    }
+    public static Node Item(){
+        return Item.getNode();
+    }
+    public static Node String(){
+        return String.getNode();
     }
 }
