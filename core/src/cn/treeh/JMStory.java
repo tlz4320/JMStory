@@ -1,64 +1,64 @@
 package cn.treeh;
 
-import cn.treeh.Util.FontAddImg;
+import cn.treeh.Audio.BgmPlayer;
+import cn.treeh.Game.GamePlay;
+import cn.treeh.NX.Bitmap;
+import cn.treeh.NX.NXFiles;
+import cn.treeh.NX.Node;
+import cn.treeh.UI.UI;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.github.tommyettinger.textra.Font;
-import com.github.tommyettinger.textra.TextraLabel;
+
+import java.nio.ByteBuffer;
 
 public class JMStory extends ApplicationAdapter {
 
     private Viewport viewport;
-    private Camera camera;
     ShapeRenderer sr;
     SpriteBatch batch;
-    Texture img;
     Stage stage;
-    ShaderProgram shaderProgram;
-    TextraLabel label;
+    UI ui;
+    GamePlay game;
+    Pixmap pixmap;
+    Texture texture;
     @Override
     public void create() {
-        camera = new PerspectiveCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
-        //shader我还是没搞明白，如果位置不会出问题的话  我决定先不搞了
-        //真不行就直接在代码里计算位置好了 不要在shader里面计算
-//        shaderProgram = Window.get().shaderInit();
-//        Label.LabelStyle sp = new Label.LabelStyle(Text_rm.fontMap.get(Text_rm.Font.A11M), Color.BLUE);
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new PerspectiveCamera());
         stage = new Stage();
-        String text = "[%50][GREEN]Hello,{WAIT} world!"
-                + "[ORANGE]{SLOWER}[+Img1] [%200]Did you[] know orange is my favorite color?";
-
-// Create a TypingLabel instance with your custom text
-
         sr = new ShapeRenderer();
         batch = new SpriteBatch();
-//
-//        stage.addActor(label);
         Gdx.input.setInputProcessor(stage);
-        img = new Texture("badlogic.jpg");
-        font = new Font("alibb.fnt").setTextureFilter().setName("alibb");
-        FontAddImg.fontAddImg(font, 1, img);
-        label = new TextraLabel(text, font);
-        label.setPosition(100, 100);
+        BgmPlayer.play("BgmUI.img/Title");
 
+        pixmap = new Pixmap(331, 185, Pixmap.Format.RGBA8888);
+        ByteBuffer b;
+
+        Node n = NXFiles.Map().subNode("Obj/login.img/Title/signboard/1/0");
+        Bitmap bm = n.getBitmap();
+        b = bm.data();
+
+        pixmap.setPixels(b);
+        PixmapIO.writePNG(Gdx.files.absolute("D:\\program\\project\\JMStory\\wz\\png\\test2.png"), pixmap);
+        texture = new Texture(pixmap);
+//        ui = UI.createUI(stage, batch);
+//        game = GamePlay.createGamePlay(stage, batch);
     }
-    Font font;
     int frame = 0;
     @Override
     public void render() {
         frame++;
-        ScreenUtils.clear(0, 0, 0, 1);
+        ScreenUtils.clear(1, 1, 1, 0);
         //我在想需不需要每一帧都单独进行一个input的更新
         //现在延迟30帧更新一次好了，减少没必要的计算
         if(frame == 30) {
@@ -66,15 +66,17 @@ public class JMStory extends ApplicationAdapter {
                 if(!actor.isVisible())
                     actor.remove();
             }
-            stage.draw();
+
             frame = 0;
         }
-        stage.act();
 
         batch.begin();
-        label.draw(batch, 1);
+//        ui.draw();
+//        game.draw();
+        batch.draw(texture, 100, 100);
         batch.end();
 
+//        stage.act();
 
     }
     public void reshape(int width, int height){
@@ -83,7 +85,8 @@ public class JMStory extends ApplicationAdapter {
     @Override
     public void dispose() {
         batch.dispose();
-        img.dispose();
+        ui.dispose();
+        game.dispose();
     }
 
 }

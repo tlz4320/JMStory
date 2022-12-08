@@ -1,4 +1,4 @@
-package cn.treeh.Move;
+package cn.treeh.Game;
 
 public class Spawn {
 }

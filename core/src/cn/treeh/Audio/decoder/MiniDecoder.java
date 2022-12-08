@@ -11,19 +11,20 @@ public class MiniDecoder extends AbstractDecoder {
 
     private InputStream fileStream;
 
+
     /**
-     * 鐢ㄦ寚瀹氱殑闊抽杈撳嚭audio鍒涘缓涓€涓狹iniPlayer銿
-     * @param audio 闊抽杈撳嚭瀵硅薄銆傝嫢涿<b>null</b> 鍙В鐮佷笉浜х敓杈撳嚭銿
+     * 用指定的音频输出audio创建一个MiniPlayer。
+     * @param audio 音频输出对象。若为 <b>null</b> 只解码不产生输出。
      */
     public MiniDecoder(IAudio audio) {
         super(audio);
     }
 
     /**
-     * 鎵撳紑杈撳叆娴佸苟鍒濆鍖栬В鐮佸櫒銆?
-     * @param input MP3byte銿
-     * @return MP3甯уご绠€鐭俊鎭€?
-     * @throws IOException 鍙戠敓I/O閿欒銆?
+     * 打开输入流并初始化解码器。
+     * @param input MP3 byte数据。
+     * @return MP3帧头简短信息。
+     * @throws IOException 发生I/O错误。
      */
     public String open(byte[] input) {
         fileStream = new ByteArrayInputStream(input);
@@ -38,38 +39,27 @@ public class MiniDecoder extends AbstractDecoder {
             return -1;
         }
     }
-    boolean stop = false;
-    boolean stopped = false;
-    public void stop(){
-        stop = true;
-    }
-    public void change(byte[] data){
-        stop();
-        while(!stopped);
-        stopped = true;
-        fileStream = new ByteArrayInputStream(data);
-        stop = false;
-        run();
-    }
 
-    @Override
-    protected boolean cooperate() {
-        return stop;
-    }
-    @Override
-    public void reset(){
-        try {
-            fileStream.reset();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    };
+//    public void change(byte[] data){
+//        pause();
+//        fileStream = new ByteArrayInputStream(data);
+//        openDecoder();
+//        stop = true;
+//        pause();
+//    }
+//    @Override
+//    public void reset(){
+//        try {
+//            fileStream.reset();
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//    };
     @Override
     protected void done() {
-        if (fileStream != null && !repeat) {
+        if (fileStream != null) {
             try { fileStream.close(); } catch (IOException e) {e.printStackTrace(); }
         }
-        stopped = true;
     }
 
 }

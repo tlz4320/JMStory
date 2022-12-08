@@ -3,19 +3,9 @@ package cn.treeh.Graphics.Text;
 import cn.treeh.NX.NXFiles;
 import cn.treeh.NX.Node;
 import cn.treeh.Util.Configure;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.math.Vector2;
 import com.github.tommyettinger.textra.Font;
-import com.sun.tools.javac.util.StringUtils;
-
-import java.util.HashMap;
-import java.util.LinkedList;
+import org.apache.commons.lang3.StringUtils;
 
 public class Text {
     public static Font fontMap;
@@ -79,7 +69,7 @@ public class Text {
                         case 'f':
                         {
 //                            Words words = new Words();
-                            byte[] bitmap = NXFiles.Item().subNode(text.substring(first + 2, last)).getBitmap().data();
+//                            byte[] bitmap = NXFiles.Item().subNode(text.substring(first + 2, last)).getBitmap().data();
 //                            words.texture = new Texture(new Pixmap(bitmap, 0, bitmap.length));
 //                            if(words.texture.getWidth() + nowWidth > maxWidth)
 //                                addLine();

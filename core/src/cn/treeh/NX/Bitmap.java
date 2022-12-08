@@ -7,7 +7,17 @@ import java.nio.ByteBuffer;
 
 public class Bitmap {
     long pos;
-    int width, height;
+    int width;
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    int height;
     NxFile f;
     public Bitmap(long pos, int width, int height, NxFile f){
         this.pos = pos;
@@ -18,9 +28,9 @@ public class Bitmap {
     public int length(){
         return 4 * width * height;
     }
-    public byte[] data(){
+    public ByteBuffer data(){
         if(pos<0)
-            return new byte[0];
+            return ByteBuffer.allocate(0);
         synchronized (f.fileReader) {
             try {
                 f.seek(pos);
@@ -32,8 +42,7 @@ public class Bitmap {
                 bf.position(0);
                 ByteBuffer des = BufferUtils.createByteBuffer(length());
                 LZ4.LZ4_decompress_safe(bf, des);
-                des.get(src, 0, src.length);
-                return src;
+                return des;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

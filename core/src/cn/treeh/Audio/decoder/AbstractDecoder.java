@@ -18,10 +18,6 @@ public abstract class AbstractDecoder {
 	private final Header header;
 	private final IAudio audio;
 	private AbstractLayer layer;
-	boolean repeat = false;
-	public Header getHeader() {
-		return header;
-	}
 
 	public IAudio getAudio(){
 		return audio;
@@ -35,7 +31,7 @@ public abstract class AbstractDecoder {
 		header = new Header();
 		buf = new byte[8192];
 	}
-	public void reset(){};
+
 	/**
 	 * 开始解码，直至到达流的结尾或被用户终止。
 	 * <p>如果解码过程中被用户终止，将以立即方式结束音乐数据解码。
@@ -46,13 +42,11 @@ public abstract class AbstractDecoder {
 
 		if (layer != null) {
 			layer.initialize();
-			while (repeat)
-				while (!eof) {
-					pos = layer.decodeAudioData(buf, pos);
-					eof = isInterrupted = cooperate();
-					nextFrameHeader();
-				}
-			reset();
+			while (!eof) {
+				pos = layer.decodeAudioData(buf, pos);
+				eof = isInterrupted = !cooperate();
+				nextFrameHeader();
+			}
 			//System.out.println("\nAbstractDecoder.run: eof = " + eof + ", isInterrupted = " + isInterrupted);
 			layer.close(isInterrupted);
 		}
