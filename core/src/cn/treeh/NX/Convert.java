@@ -5,8 +5,14 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.util.lz4.LZ4;
 
 import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.zip.DataFormatException;
@@ -88,23 +94,28 @@ public class Convert{
     }
     class InFile{
         public RandomAccessFile fileReader;
+        MappedByteBuffer out;
+                //= fileReader.getChannel().map(
+                //FileChannel.MapMode.READ_WRITE, 0, fileReader.si);
+
         void skipBytes(int s){
             try {
-                fileReader.skipBytes(s);
+                out.position(out.position() + s);
+//                fileReader.skipBytes(s);
             }catch (Exception e){
                 throw new RuntimeException(e);
             }
         }
         byte readByte(){
             try {
-                return fileReader.readByte();
+                return out.get();
             }catch (Exception e){
                 throw new RuntimeException(e);
             }
         }
         int readUnsignedByte(){
             try {
-                return fileReader.readUnsignedByte();
+                return Byte.toUnsignedInt(out.get());
             }catch (Exception e){
                 throw new RuntimeException(e);
             }
@@ -114,8 +125,8 @@ public class Convert{
         }
         char readChar(){
             try {
-                int ch1 = fileReader.read();
-                int ch2 = fileReader.read();
+                int ch1 = readUnsignedByte();
+                int ch2 = readUnsignedByte();
                 if ((ch1 | ch2) < 0) {
                     throw new EOFException();
                 } else {
@@ -127,7 +138,7 @@ public class Convert{
         }
         long getFilePointer(){
             try {
-                return fileReader.getFilePointer();
+                return (long)out.position();
             }catch (Exception e){
                 throw new RuntimeException(e);
             }
@@ -140,14 +151,14 @@ public class Convert{
         }
         void readFully(byte[] b){
             try {
-                fileReader.readFully(b);
+                out.get(b);
             }catch (Exception e){
                 throw new RuntimeException(e);
             }
         }
         void seek(long pos){
             try{
-                fileReader.seek(pos);
+                out.position((int) pos);
             }catch (Exception e){
                 throw new RuntimeException(e);
             }
@@ -261,6 +272,8 @@ public class Convert{
         try {
             fileReader = new InFile();
             fileReader.fileReader = new RandomAccessFile(filename, "r");
+            fileReader.out = fileReader.fileReader.getChannel().map(FileChannel.MapMode.READ_ONLY,
+                    0, new File(filename).length());
             fileWriter = new OutFile();
             fileWriter.fileWriter = new RandomAccessFile(filename.replace(".wz", ".nx"), "rw");
             fileWriter.seek(0);
@@ -490,7 +503,6 @@ public class Convert{
     void extended_property(int node, long pos) throws Exception{
         node n = nodes.get(node);
         String st = rStrings.get((int)read_prop_string(pos));
-
         if(st.equals("Property")){
             fileReader.skipBytes(2);
             sub_property(node, pos);
@@ -511,7 +523,7 @@ public class Convert{
         } else if(st.equals("Shape2D#Vector2D")){
             n.type = type.vector;
             n.data = readCInt();
-            n.data = (Integer.toUnsignedLong(readCInt())) << 32;
+            n.data += (Integer.toUnsignedLong(readCInt())) << 32;
         } else if(st.equals("Shape2D#Convex2D")){
             int count = readCInt();
             int ni = nodes.size();
@@ -714,7 +726,7 @@ public class Convert{
     }
     void source_fail(LinkedList<Integer> link, String str){
         node n = orderedNode[link.getFirst()];
-        O.ptEln("Failed to find " + str + " for [" + rStrings.get(n.data) + "].");
+        O.ptEln("Failed to find " + str + " for [" + rStrings.get((int)n.data) + "].");
     }
     boolean resolve_outlink(LinkedList<Integer> link){
         link = (LinkedList<Integer>)link.clone();
@@ -948,8 +960,6 @@ public class Convert{
     void write_bitmaps() throws Exception {
         fileWriter.seek(bitmap_table_offset);
         for (int index = 0; index < bitmaps.size(); index++) {
-            if(index == 16837)
-                O.ptln("etst");
             bitmap b = bitmaps.get(index);
             fileWriter.writeLong(bitmap_offset);
             fileReader.seek(b.data);
@@ -972,7 +982,7 @@ public class Convert{
             byte[] output = new byte[(int) biggest];
             int[] key = b.key;
             int decompressed = 0;
-            fileReader.fileReader.read(input, 0, length);
+            fileReader.out.get(input, 0, length);
             if ((decompressed = decompress(input, output, length)) == -1 &&
                     ((length = decrypt(input, length, key)) == -1 ||
                             (decompressed = decompress(input, output, length)) == -1)) {
@@ -1138,6 +1148,12 @@ public class Convert{
 
 
     public static void main(String[] args) {
-        new Convert().convert("D:\\1\\mxd\\冒险岛ori\\冒险岛online\\Map.wz");
+//        File[] files= new File("D:\\program\\project\\JMStory\\wz").listFiles();
+//        for(File file : files){
+//            if(file.getName().endsWith("wz")){
+//                new Convert().convert(file.getAbsolutePath());
+//            }
+//        }
+        new Convert().convert("D:\\program\\project\\JMStory\\wz\\Map.wz");
     }
 }
