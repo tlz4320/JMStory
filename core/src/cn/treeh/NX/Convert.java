@@ -366,7 +366,7 @@ public class Convert{
                 case 2: {
                     int s = fileReader.readInt();
                     long p = fileReader.getFilePointer();
-                    fileReader.seek(fileStart + 2);
+                    fileReader.seek(fileStart + s);
                     type = fileReader.readUnsignedByte();
                     nn.name = read_enc_string();
                     fileReader.seek(p);
@@ -875,14 +875,42 @@ public class Convert{
         fileWriter.writeLong(audio_table_offset);
         O.ptln("Header Done!");
     }
+    static byte[] nodedata = new byte[20];
+    public static void makeNode(int name, int child, int num, long data){
+        nodedata[0] = (byte) (name & 255);
+        nodedata[1] = (byte) ((name >>> 8) & 255);
+        nodedata[2] = (byte)((name >>> 16) & 255);
+        nodedata[3] = (byte)((name >>> 24) & 255);
+        nodedata[4] = (byte) (child & 255);
+        nodedata[5] = (byte) ((child >>> 8) & 255);
+        nodedata[6] = (byte)((child >>> 16) & 255);
+        nodedata[7] = (byte)((child >>> 24) & 255);
+        nodedata[8] = (byte) (num & 255);
+        nodedata[9] = (byte) ((num >>> 8) & 255);
+        nodedata[10] = (byte)((num >>> 16) & 255);
+        nodedata[11] = (byte)((num >>> 24) & 255);
+        num = ((int)data);
+        nodedata[12] = (byte) (num & 255);
+        nodedata[13] = (byte) ((num >>> 8) & 255);
+        nodedata[14] = (byte)((num >>> 16) & 255);
+        nodedata[15] = (byte)((num >>> 24) & 255);
+        num = ((int)(data >>> 32));
+        nodedata[16] = (byte) (num & 255);
+        nodedata[17] = (byte) ((num >>> 8) & 255);
+        nodedata[18] = (byte)((num >>> 16) & 255);
+        nodedata[19] = (byte)((num >>> 24) & 255);
+    }
     void write_nodes() throws Exception{
         fileWriter.seek(node_offset);
         for(node n : orderedNode) {
-            fileWriter.writeInt((int)n.name);
-            fileWriter.writeInt((int)n.children);
-            fileWriter.writeInt((n.type.value << 16) | n.num);
-            fileWriter.writeLong(n.data);
+            makeNode((int)n.name, (int)n.children, (n.type.value << 16) | n.num, n.data);
+            fileWriter.write(nodedata);
+//            fileWriter.writeInt((int)n.name);
+//            fileWriter.writeInt((int)n.children);
+//            fileWriter.writeInt((n.type.value << 16) | n.num);
+//            fileWriter.writeLong(n.data);
         }
+        O.ptln("Node write Finished");
     }
     void write_strings() throws Exception{
         fileWriter.seek(string_offset);
@@ -915,10 +943,13 @@ public class Convert{
             fileReader.readFully(tmp);
             fileWriter.write(tmp);
         }
+        O.ptln("Audio Write Finished");
     }
     void write_bitmaps() throws Exception {
         fileWriter.seek(bitmap_table_offset);
         for (int index = 0; index < bitmaps.size(); index++) {
+            if(index == 16837)
+                O.ptln("etst");
             bitmap b = bitmaps.get(index);
             fileWriter.writeLong(bitmap_offset);
             fileReader.seek(b.data);
@@ -948,8 +979,9 @@ public class Convert{
                 O.ptEln("Unable to inflate error data");
                 f1 = 2;
                 f2 = 0;
+                length = (int)biggest;
                 decompressed = size;
-                fileWriter.write(new byte[size]);
+//                fileWriter.write(new byte[size]);
             }
             byte[] tmp = input;
             input = output;
@@ -980,9 +1012,9 @@ public class Convert{
                 default:
                     E("Unknown image format");
             }
-            if (check != pixels * 4) {
+            if (check != (pixels * 4)) {
                 if (f1 != 2 || f2 != 0)
-                    E("Size mismatch");
+                    E("Size mismatch" + index);
             }
             switch (f1) {
                 case 1:
@@ -1076,7 +1108,7 @@ public class Convert{
         try {
             res = inflater.inflate(output);
             inflater.end();
-            return res;
+            return res == 0 ? -1 : res;
         } catch (DataFormatException e) {
             return -1;
         } catch (ArrayIndexOutOfBoundsException e2){
@@ -1106,6 +1138,6 @@ public class Convert{
 
 
     public static void main(String[] args) {
-        new Convert().convert("D:\\1\\mxd\\冒险岛online\\Sound.wz");
+        new Convert().convert("D:\\1\\mxd\\冒险岛ori\\冒险岛online\\Map.wz");
     }
 }
