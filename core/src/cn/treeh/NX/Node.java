@@ -1,9 +1,11 @@
 package cn.treeh.NX;
 
+import java.io.IOException;
+
 public class Node {
     //或许可以搞一个Cache
 
-    enum Type {
+    public enum Type {
         none(0),
         integer(1),
         real(2),
@@ -31,6 +33,12 @@ public class Node {
         int num;
         Type type;
         long union;
+
+        @Override
+        public boolean equals(Object o) {
+            Data node = (Data)o;
+            return this.pos == node.pos && this.name == node.name && this.union == node.union;
+        }
 //       long ireal;
 //       double dreal;
 //       int string;
@@ -44,6 +52,22 @@ public class Node {
     Data m_data = null;
     NxFile f;
 
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Node) {
+            Node node = (Node) o;
+            return node.m_data.equals(this.m_data);
+        }
+        return false;
+    }
+    public int nChild(){
+        return m_data.num;
+    }
+    public Node subNode(int index){
+        if(index > m_data.num)
+            return new Node(-1, f);
+        return new Node(f.node_offset + m_data.children * 20L + index * 20L, f);
+    }
     public Node(long m_data_pos, NxFile f) {
         try {
             this.f = f;
@@ -61,6 +85,9 @@ public class Node {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    public Type getType(){
+        return m_data != null ? m_data.type : Type.none;
     }
     private Node get_child(String s){
         String[] ss = s.split("[/]");
@@ -116,10 +143,48 @@ public class Node {
         return get_child(o.toString());
     }
     public long getInt(){
-        return m_data.union;
+        return getInt(0);
+    }
+    public long getInt(long def){
+        if (m_data == null)
+            return def;
+        switch (m_data.type) {
+            case none:
+            case vector:
+            case bitmap:
+            case audio:
+                return def;
+            case integer:
+            case real:
+                return m_data.union;
+            case string:
+                return Long.parseLong(getString("0"));
+            default:
+                System.err.println("Unknown node type");
+        }
+        return def;
     }
     public double getReal(){
-        return Double.longBitsToDouble(m_data.union);
+        return getReal(0);
+    }
+    public double getReal(double def){
+        if (m_data == null)
+            return def;
+        switch (m_data.type) {
+            case none:
+            case vector:
+            case bitmap:
+            case audio:
+                return def;
+            case integer:
+            case real:
+                return Double.longBitsToDouble(m_data.union);
+            case string:
+                return Double.parseDouble(getString("0"));
+            default:
+                System.err.println("Unknown node type");
+        }
+        return def;
     }
     public String getString(String def){
         if(m_data == null)
@@ -146,6 +211,23 @@ public class Node {
                 }
             }
         }
+        return def;
+    }
+    public String getName() {
+        f.seek(f.string_offset + m_data.name * 8L);
+        f.seek(f.readLong());
+        try {
+            return f.fileReader.readUTF();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public int[] getVector(){
+        return getVector(new int[]{0, 0});
+    }
+    public int[] getVector(int[] def){
+        if(m_data.type == Type.vector)
+            return new int[]{(int) m_data.union, (int) (m_data.union >> 32)};
         return def;
     }
     public int x() {
@@ -187,5 +269,11 @@ public class Node {
             return new Bitmap(pos, width, height, f);
         }
         return new Bitmap(-1, 0, 0, f);
+    }
+    public Node getRoot(){
+        return new Node(f.node_offset, f);
+    }
+    public boolean isRoot(){
+        return m_data.pos == f.node_offset;
     }
 }

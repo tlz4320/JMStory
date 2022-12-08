@@ -1,5 +1,6 @@
 package cn.treeh.NX;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
@@ -18,9 +19,12 @@ public class NxFile {
 
     public RandomAccessFile fileReader;
     public NxFile(String path){
-        open(path);
+        open(new File(path));
     }
-    void open(String name){
+    public  NxFile(File file){
+        open(file);
+    }
+    void open(File name){
         try {
             fileReader = new RandomAccessFile(name, "r");
             //write with NoLifeNX file.cpp

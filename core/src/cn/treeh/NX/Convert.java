@@ -1,13 +1,18 @@
 package cn.treeh.NX;
 
 import cn.treeh.Util.O;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.lz4.LZ4;
 
-import java.io.EOFException;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.*;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -1009,6 +1014,8 @@ public class Convert{
                 case 2050:
                     check *= 4;
                     break;
+                case 517:
+                    check /= 128;
                 default:
                     E("Unknown image type!");
             }
@@ -1058,16 +1065,34 @@ public class Convert{
                     output = tmp;
                     break;
             }
-            ByteBuffer bf = BufferUtils.createByteBuffer(length);
-            bf.put(input, 0, length);
+
+
+            ByteBuffer bf = BufferUtils.createByteBuffer(size);
+            //完全不明白为什么要把G和B互换  但是确实是换了
+            exchange(input);
+            bf.put(input, 0, size);
+
+//            if(index == 18948) {
+//                System.out.println("test");
+//                input = new FileInputStream("assets/test.mm").readAllBytes();
+//                System.arraycopy(input, 0, output, 0, input.length);
+//                DataBufferByte imgData = new DataBufferByte(output, length);
+//                int[] ZAHLEN = new int[]{0x02, 0x01, 0x00, 0x03};
+//                SampleModel model = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE,
+//                        width, height, 4, width * 4, ZAHLEN);
+//                WritableRaster raster = Raster.createWritableRaster(model, imgData, new Point(0, 0));
+//                BufferedImage ret = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+//                ret.setData(raster);
+//                ImageIO.write(ret, "png", new File("D:\\program\\project\\JMStory\\wz\\png\\" + index + ".png"));
+////
+//            }
             bf.position(0);
             ByteBuffer final_out = BufferUtils.createByteBuffer(LZ4.LZ4_compressBound(size));
             int final_size = LZ4.LZ4_compress_default(bf, final_out);
             long nowPos = fileWriter.getFilePointer();
             fileWriter.seek(bitmap_offset);
-            fileWriter.writeLong(final_size);
-            if (output.length < final_size)
-                output = new byte[final_size];
+            fileWriter.writeInt(final_size);
+            output = new byte[final_size];
             final_out.get(output, 0, final_size);
 
             fileWriter.write(output);
@@ -1075,6 +1100,13 @@ public class Convert{
             fileWriter.seek(nowPos);
         }
         O.ptln("Well Done!!! All Finished!");
+    }
+    void exchange(byte[] input){
+        for(int i = 0; i < input.length - 4; i+=4){
+            byte tmp = input[i + 2];
+            input[i + 2] = input[i];
+            input[i] = tmp;
+        }
     }
     void scale(byte[] input, byte[] output, int width, int height){
         int w = width / 16;
@@ -1094,21 +1126,19 @@ public class Convert{
         }
     }
     void make565(byte[] input, byte[] output, int pixels) {
-        pixels *= 4;
-        for (int i = 0; i < pixels; i += 4) {
-            output[i] = (byte) (table5[Byte.toUnsignedInt(input[i]) & 31]& 0xFF);
-            output[i + 1] = (byte) (table5[Byte.toUnsignedInt(input[i]) >>> 5 + input[1] & 7]& 0xFF);
-            output[i + 2] = (byte) (table5[Byte.toUnsignedInt(input[i + 1]) >>> 3]& 0xFF);
-            output[i + 3] = (byte)255;
+        pixels *= 2;
+        for (int i = 0; i < pixels; i += 2) {
+            output[i * 2] = (byte) (table5[Byte.toUnsignedInt(input[i]) & 31]& 0xFF);
+            output[i * 2 + 1] = (byte) (table5[Byte.toUnsignedInt(input[i]) >>> 5 + input[1] & 7]& 0xFF);
+            output[i * 2 + 2] = (byte) (table5[Byte.toUnsignedInt(input[i + 1]) >>> 3]& 0xFF);
+            output[i * 2 + 3] = (byte)255;
         }
     }
     void make4444(byte[] input, byte[] output, int pixels) {
-        pixels *= 4;
-        for (int i = 0; i < pixels; i += 4) {
-            output[i] = (byte) (table4[Byte.toUnsignedInt(input[i]) & 0xF] & 0xFF);
-            output[i + 1] = (byte) (table4[Byte.toUnsignedInt(input[i]) >>> 4]& 0xFF);
-            output[i + 2] = (byte) (table4[Byte.toUnsignedInt(input[i + 1]) & 0xF]& 0xFF);
-            output[i + 3] = (byte) (table4[Byte.toUnsignedInt(input[i + 1]) >>> 4]& 0xFF);
+        pixels *= 2;
+        for (int i = 0; i < pixels; i++) {
+            output[i * 2] = (byte) (table4[Byte.toUnsignedInt(input[i]) & 0xF] & 0xFF);
+            output[i * 2 + 1] = (byte) (table4[Byte.toUnsignedInt(input[i]) >>> 4]& 0xFF);
         }
     }
     int decompress(byte[] input, byte[] output, int length){
