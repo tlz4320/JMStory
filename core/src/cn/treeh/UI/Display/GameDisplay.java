@@ -11,7 +11,7 @@ public class GameDisplay extends BaseDisplay{
         batch = b;
     }
     @Override
-    public void draw() {
+    public void draw(float alpha) {
 
     }
 

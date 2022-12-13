@@ -21,6 +21,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 public class Convert{
@@ -963,6 +964,7 @@ public class Convert{
         O.ptln("Audio Write Finished");
     }
     void write_bitmaps() throws Exception {
+        O.ptln("BitMap decode and write, this will tale a very long time");
         fileWriter.seek(bitmap_table_offset);
         for (int index = 0; index < bitmaps.size(); index++) {
             bitmap b = bitmaps.get(index);
@@ -987,7 +989,17 @@ public class Convert{
             byte[] output = new byte[(int) biggest];
             int[] key = b.key;
             int decompressed = 0;
-            fileReader.out.get(input, 0, length);
+            try {
+                if(length + fileReader.out.position() > fileReader.out.capacity()){
+                    int _error_left = fileReader.out.capacity() - fileReader.out.position();
+                    fileReader.out.get(input, 0, _error_left);
+                    O.ptln("Final pixel append 0s");
+                }
+                else
+                    fileReader.out.get(input, 0, length);
+            }catch (Exception e){
+                E("Final Pixel large than file " + index);
+            }
             if ((decompressed = decompress(input, output, length)) == -1 &&
                     ((length = decrypt(input, length, key)) == -1 ||
                             (decompressed = decompress(input, output, length)) == -1)) {
@@ -1030,8 +1042,10 @@ public class Convert{
                     E("Unknown image format");
             }
             if (check != (pixels * 4)) {
+                //这里我有点不理解，实际上是原来代码就写错了，反而瞎猫碰上死耗子能过去
+                //原来C++的写法是!f1 == 2 实际上运算顺序是 (!f1) == 2 但是这一定是false 所以永远是true
                 if (f1 != 2 || f2 != 0)
-                    E("Size mismatch" + index);
+                    O.ptln("Size mismatch" + index);
             }
             switch (f1) {
                 case 1:
@@ -1087,15 +1101,12 @@ public class Convert{
 ////
 //            }
             bf.position(0);
-            ByteBuffer final_out = BufferUtils.createByteBuffer(LZ4.LZ4_compressBound(size));
-            int final_size = LZ4.LZ4_compress_default(bf, final_out);
+            int final_size = compress(input, output, size);
             long nowPos = fileWriter.getFilePointer();
             fileWriter.seek(bitmap_offset);
             fileWriter.writeInt(final_size);
-            output = new byte[final_size];
-            final_out.get(output, 0, final_size);
-
-            fileWriter.write(output);
+//            output = new byte[final_size];
+            fileWriter.write(output, final_size);
             bitmap_offset += 4 + final_size;
             fileWriter.seek(nowPos);
         }
@@ -1141,6 +1152,21 @@ public class Convert{
             output[i * 2 + 1] = (byte) (table4[Byte.toUnsignedInt(input[i]) >>> 4]& 0xFF);
         }
     }
+
+    int compress(byte[] input, byte[] out, int length){
+        Deflater deflater = new Deflater(9);
+        deflater.setInput(input,0, length);
+        deflater.finish();
+        int res = 0;
+        try {
+            res = deflater.deflate(out);
+            deflater.end();
+            return res == 0 ? -1 : res;
+        } catch (ArrayIndexOutOfBoundsException e2){
+            return -1;
+        }
+    }
+
     int decompress(byte[] input, byte[] output, int length){
         Inflater inflater = new Inflater();
         inflater.setInput(input,0, length);
@@ -1184,6 +1210,6 @@ public class Convert{
 //                new Convert().convert(file.getAbsolutePath());
 //            }
 //        }
-        new Convert().convert("D:\\program\\project\\JMStory\\wz\\Map.wz");
+        new Convert().convert("D:\\program\\project\\JMStory\\wz\\UI.wz");
     }
 }

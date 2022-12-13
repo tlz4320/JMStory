@@ -11,7 +11,7 @@ public class NXFiles {
         Item = new NxFile(Gdx.files.internal("Item.nx").file());
         String = new NxFile(Gdx.files.internal("String.nx").file());
         Audio = new NxFile(Gdx.files.internal("Sound.nx").file());
-//        UI = new NxFile(Gdx.files.internal("UI.nx").file());
+        UI = new NxFile(Gdx.files.internal("UI.nx").file());
         Map = new NxFile(Gdx.files.internal("Map.nx").file());
 //        Skill = new NxFile(Gdx.files.internal("Skill.nx").file());
 //        Mob = new NxFile(Gdx.files.internal("Mob.nx").file());

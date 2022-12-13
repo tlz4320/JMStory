@@ -1,0 +1,49 @@
+package cn.treeh.UI.Component;
+
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.github.tommyettinger.textra.TextraButton;
+
+public abstract class Button extends Actor {
+    public static enum State
+    {
+        NORMAL,
+        DISABLED,
+        MOUSEOVER,
+        PRESSED,
+        IDENTITY,
+        NUM_STATES
+    };
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public int[] getPosition() {
+        return position;
+    }
+
+    public void setPosition(int[] position) {
+        this.position = position;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    public abstract boolean callback();
+    State state;
+    int [] position;
+    boolean active;
+
+    public void dispose(){
+        remove();
+    }
+    public abstract void draw(int[] parentpos);
+}

@@ -4,11 +4,15 @@ import org.lwjgl.util.lz4.LZ4;
 import org.lwjgl.util.lz4.LZ4StreamDecode;
 
 import java.nio.ByteBuffer;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
 
 public class Bitmap {
     long pos;
     int width;
-
+    public long getID(){
+        return pos;
+    }
     public int getWidth() {
         return width;
     }
@@ -25,24 +29,34 @@ public class Bitmap {
         this.height = height;
         this.f = f;
     }
+
+    ByteBuffer decompress(byte[] input, int length){
+        Inflater inflater = new Inflater();
+        inflater.setInput(input,0, input.length);
+        ByteBuffer output = BufferUtils.createByteBuffer(length);
+        try {
+            inflater.inflate(output);
+            inflater.end();
+            output.position(0);
+            return output;
+        } catch (Exception e) {
+           return output;
+        }
+    }
+
     public int length(){
         return 4 * width * height;
     }
     public ByteBuffer data(){
         if(pos<0)
             return ByteBuffer.allocate(0);
-        synchronized (f.fileReader) {
+        synchronized (f.file) {
             try {
                 f.seek(pos);
                 int size = (int)f.readInt();
-                byte[] src = new byte[length()];
+                byte[] src = new byte[size];
                 f.fileReader.readFully(src);
-                ByteBuffer bf = BufferUtils.createByteBuffer(size);
-                bf.put(src, 0, size);
-                bf.position(0);
-                ByteBuffer des = BufferUtils.createByteBuffer(length());
-                LZ4.LZ4_decompress_safe(bf, des);
-                return des;
+                return decompress(src, length());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

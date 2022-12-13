@@ -22,7 +22,7 @@ public class Audio {
     public byte[] data(int skip){
         if(pos < 0)
             return new byte[0];
-        synchronized (f.fileReader) {
+        synchronized (f.file) {
             f.seek(pos);
             f.skip(skip);
             byte[] music = new byte[len - skip];

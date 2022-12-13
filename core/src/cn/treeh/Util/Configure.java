@@ -7,5 +7,6 @@ public class Configure {
     public static int VIEW_Y_OFFSET = 10;
     public static int screenHeight = 600;
     public static int screenWidth = 800;
+    public static int TIME_STEP = 8;
 
 }

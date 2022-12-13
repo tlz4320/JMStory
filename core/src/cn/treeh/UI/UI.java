@@ -25,8 +25,11 @@ public class UI {
         display = new LoginDisplay(s, b);
     }
     Display display;
-    public void draw(){
-        display.draw();
+    public void draw(float alpha){
+        display.draw(alpha);
+    }
+    public void update(){
+        display.update();
     }
     public void dispose(){
         display.dispose();

@@ -1,8 +1,6 @@
 package cn.treeh.NX;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
@@ -16,8 +14,9 @@ public class NxFile {
     public long bitmap_offset;// = (((long) (read())) << 32) + read();
     public long audio_count;// = read();
     public long audio_offset;// = (((long) (read())) << 32) + read();
+    public final Integer file = 1;
+    public RandomDataInput fileReader;
 
-    public RandomAccessFile fileReader;
     public NxFile(String path){
         open(new File(path));
     }
@@ -26,7 +25,7 @@ public class NxFile {
     }
     void open(File name){
         try {
-            fileReader = new RandomAccessFile(name, "r");
+            fileReader = new RandomDataInput(name);
             //write with NoLifeNX file.cpp
             /*
                 uint32_t const magic;
@@ -51,7 +50,14 @@ public class NxFile {
             audio_count = readInt();
             audio_offset = readLong();
         }catch (Exception e){
-            throw  new RuntimeException("File not found: + " + name);
+            throw  new RuntimeException("File not found: " + name);
+        }
+    }
+    String readUTF(){
+        try {
+            return fileReader.readUTF();
+        }catch (Exception e){
+            throw new RuntimeException(e);
         }
     }
     void skip(int s){
@@ -61,6 +67,7 @@ public class NxFile {
             throw new RuntimeException(e);
         }
     }
+
     byte readByte(){
         try {
             return fileReader.readByte();

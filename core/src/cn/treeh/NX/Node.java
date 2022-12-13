@@ -60,8 +60,13 @@ public class Node {
         }
         return false;
     }
+
+    public boolean valid(){
+        return m_data != null;
+    }
     public int nChild(){
-        return m_data.num;
+
+        return m_data != null ? m_data.num : -1;
     }
     public Node subNode(int index){
         if(index > m_data.num)
@@ -103,7 +108,7 @@ public class Node {
         //therefore add lock before to make it safe
         //I think it won't influence performance badly
         //Because except get_child need multi-seek call, other function only need seek once and read once.
-        synchronized (f.fileReader) {
+        synchronized (f.file) {
             if (m_data == null)
                 return this;//保证程序不要出错
             long p = f.node_offset + m_data.children * 20L;
@@ -122,7 +127,7 @@ public class Node {
                     sl = t + f.readInt() * 8L;
                     f.seek(sl);
                     f.seek(f.readLong());
-                    String name = f.fileReader.readUTF();
+                    String name = f.readUTF();
                     cmp = s.compareTo(name);
                     if (cmp < 0) {
                         n = n2;
@@ -140,6 +145,8 @@ public class Node {
     }
 
     public Node subNode(Object o) {
+        if(o instanceof Integer)
+            return subNode(((Integer) o).intValue());
         return get_child(o.toString());
     }
     public long getInt(){
@@ -200,11 +207,11 @@ public class Node {
             case real:
                 return getReal() + "";
             case string: {
-                synchronized (f.fileReader) {
+                synchronized (f.file) {
                     long sl = f.string_offset + 8 * m_data.union;
                     f.seek(sl);
                     try {
-                        return f.fileReader.readUTF();
+                        return f.readUTF();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -216,17 +223,14 @@ public class Node {
     public String getName() {
         f.seek(f.string_offset + m_data.name * 8L);
         f.seek(f.readLong());
-        try {
-            return f.fileReader.readUTF();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return f.readUTF();
+
     }
     public int[] getVector(){
         return getVector(new int[]{0, 0});
     }
     public int[] getVector(int[] def){
-        if(m_data.type == Type.vector)
+        if(m_data != null && m_data.type == Type.vector)
             return new int[]{(int) m_data.union, (int) (m_data.union >> 32)};
         return def;
     }
@@ -247,7 +251,7 @@ public class Node {
             int audioLen = (int) (m_data.union >> 32);
             int audioIndex = (int) m_data.union;
             long pos = f.audio_offset + audioIndex * 8L;
-            synchronized (f.fileReader) {
+            synchronized (f.file) {
                 f.seek(pos);
                 pos = f.readLong();
             }
@@ -262,7 +266,7 @@ public class Node {
             int width = (int) (m_data.union >> 32) & 0xFFFF;
             int height = (int) (m_data.union >> 48);
             long pos = f.bitmap_offset + bitmapIndex * 8L;
-            synchronized (f.fileReader) {
+            synchronized (f.file) {
                 f.seek(pos);
                 pos = f.readLong();
             }
