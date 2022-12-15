@@ -1,35 +1,19 @@
 package cn.treeh;
 
-import cn.treeh.Audio.BgmPlayer;
 import cn.treeh.Game.GamePlay;
 import cn.treeh.Graphics.*;
-import cn.treeh.Graphics.Text.Text;
-import cn.treeh.NX.Bitmap;
 import cn.treeh.NX.NXFiles;
 import cn.treeh.NX.Node;
-import cn.treeh.UI.Component.Button;
 import cn.treeh.UI.UI;
 import cn.treeh.Util.Configure;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class JMStory extends ApplicationAdapter {
 
@@ -53,7 +37,7 @@ public class JMStory extends ApplicationAdapter {
         Gdx.input.setInputProcessor(stage);
 //        last_time = System.currentTimeMillis();
 //        BgmPlayer.play("BgmUI.img/Title");
-        ui = UI.createUI(stage, batch);
+        ui = UI.createUI(batch, stage);
 //
     }
 
@@ -103,9 +87,8 @@ public class JMStory extends ApplicationAdapter {
 //        }
 
         float alpha = (float) elapsed/ time_step;
-        draw(alpha);
         batch.begin();
-        GraphicsGL.get().draw(batch);
+        draw(alpha);
         batch.end();
         stage.act();
 //        stage.act();

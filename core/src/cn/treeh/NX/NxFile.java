@@ -17,6 +17,7 @@ public class NxFile {
     public final Integer file = 1;
     public RandomDataInput fileReader;
 
+    String name;
     public NxFile(String path){
         open(new File(path));
     }
@@ -25,6 +26,7 @@ public class NxFile {
     }
     void open(File name){
         try {
+            this.name = name.getName();
             fileReader = new RandomDataInput(name);
             //write with NoLifeNX file.cpp
             /*
@@ -102,8 +104,10 @@ public class NxFile {
     }
     Node root;
     public Node getNode(){
-        if(root == null)
+        if(root == null) {
             root = new Node(node_offset, this);
+            root.path = name;
+        }
         return root;
     }
 }

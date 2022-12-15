@@ -4,6 +4,7 @@ import cn.treeh.NX.Node;
 import cn.treeh.Util.Configure;
 import cn.treeh.Util.InterScale;
 import cn.treeh.Util.StepList;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -57,16 +58,19 @@ public class Animation {
             opacities = new int[]{0, 0};
             scales = new int[]{0, 0};
         }
-        public void draw(DrawArg arg)
+        public void draw(DrawArg arg,  SpriteBatch batch)
         {
             if(texture != null)
-                texture.draw(arg);
+                texture.draw(arg, batch);
         }
         public float getStepOpc(int step){
             return step * (opacities[1] - opacities[0]) / (float)delay;
         }
         public float getStepScale(int step){
             return step * (scales[1] - scales[0]) / (float)delay;
+        }
+        public int[] getDimension(){
+            return texture.dimensions;
         }
     }
 
@@ -113,16 +117,16 @@ public class Animation {
     InterScale opacity = new InterScale();
     InterScale xy_scale = new InterScale();
     DrawArg drawArg;
-    public void draw(DrawArg arg, float alpha){
+    public void draw(DrawArg arg, float alpha,  SpriteBatch batch){
         Frame frame = frames.get(alpha);
         float inter_opc = opacity.get(alpha) / 255;
         float inter_scale = xy_scale.get(alpha) / 100;
         if(inter_opc != 1.0f && inter_scale != 1.0f) {
             drawArg = arg.add(drawArg, inter_scale, inter_scale, inter_opc);
-            frame.draw(drawArg);
+            frame.draw(drawArg, batch);
         }
         else{
-            frame.draw(arg);
+            frame.draw(arg, batch);
         }
     }
     public boolean update()
@@ -182,5 +186,12 @@ public class Animation {
     int getDelay(int frame_id)
     {
         return frame_id < frames.size() ? frames.get(frame_id).delay : 0;
+    }
+    public Frame getFrame(){
+        return frames.get();
+    }
+    public int[] getDimension(){
+
+        return getFrame().getDimension();
     }
 }

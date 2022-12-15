@@ -1,17 +1,29 @@
-package cn.treeh.Graphics.Text;
+package cn.treeh.Graphics;
 
 import cn.treeh.NX.NXFiles;
 import cn.treeh.NX.Node;
 import cn.treeh.Util.Configure;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.github.tommyettinger.textra.Font;
 import org.apache.commons.lang3.StringUtils;
 
 public class Text {
-    public static Font fontMap;
+    public static Font texraFont;
+    public static BitmapFont bitmapFont;
     static {//初始化字体
-        fontMap = new Font(Configure.FONT_NORMAL);
-
+        texraFont = new Font(Configure.FONT_NORMAL);
+        FreeTypeFontGenerator.setMaxTextureSize(10000);
+        FreeTypeFontGenerator normFont = new FreeTypeFontGenerator(Gdx.files.internal(Configure.FONT_LIGHT));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.characters = Gdx.files.internal("charset.txt").readString("UTF8");
+        parameter.minFilter = com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
+        parameter.magFilter = Texture.TextureFilter.Linear;
+        parameter.size = 14;
+        bitmapFont = normFont.generateFont(parameter);
     }
 
     String text;
@@ -290,5 +302,8 @@ public class Text {
         }
         //允许回收内存
         textArray = null;
+    }
+    public void draw(int[] pos, float alpha){
+
     }
 }

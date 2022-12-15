@@ -1,9 +1,16 @@
 package cn.treeh.UI.Component;
 
+import cn.treeh.Graphics.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.github.tommyettinger.textra.TextraButton;
 
-public abstract class Button extends Actor {
+public abstract class Button extends Component {
+    public Button(SpriteBatch b, Stage s) {
+        super(b, s);
+    }
+
     public static enum State
     {
         NORMAL,

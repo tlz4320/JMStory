@@ -1,6 +1,9 @@
 package cn.treeh.NX;
 
+import cn.treeh.Util.Configure;
+
 import java.io.IOException;
+import java.util.HashMap;
 
 public class Node {
     //或许可以搞一个Cache
@@ -51,7 +54,8 @@ public class Node {
 
     Data m_data = null;
     NxFile f;
-
+    String path;
+    static HashMap<String, Node> cache = new HashMap<>(1000000);
     @Override
     public boolean equals(Object o) {
         if(o instanceof Node) {
@@ -65,14 +69,24 @@ public class Node {
         return m_data != null;
     }
     public int nChild(){
-
         return m_data != null ? m_data.num : -1;
     }
     public Node subNode(int index){
         if(index > m_data.num)
-            return new Node(-1, f);
+            return none;
+        if(Configure.NX_Cache) {
+            String name = path + "/SubNode_" + index;
+            Node sub = cache.getOrDefault(name,
+                    new Node(f.node_offset + m_data.children * 20L + index * 20L, f));
+            if(cache.size() == 999999)
+                cache.clear();
+            cache.put(name, sub);
+
+            return sub;
+        }
         return new Node(f.node_offset + m_data.children * 20L + index * 20L, f);
     }
+    static Node none = new Node(-1, null);
     public Node(long m_data_pos, NxFile f) {
         try {
             this.f = f;
@@ -94,6 +108,12 @@ public class Node {
     public Type getType(){
         return m_data != null ? m_data.type : Type.none;
     }
+
+    @Override
+    public String toString() {
+        return getString();
+    }
+
     private Node get_child(String s){
         String[] ss = s.split("[/]");
         Node res = this;
@@ -104,13 +124,19 @@ public class Node {
         return res;
     }
     private Node _get_child(String s) {
+        String cacheKey = null;
+        if(Configure.NX_Cache){
+            cacheKey = path + '/' + s;
+            if(cache.containsKey(cacheKey))
+                return cache.get(cacheKey);
+        }
         //I can't guarantee this all file access won't have thread-safe problem
         //therefore add lock before to make it safe
         //I think it won't influence performance badly
         //Because except get_child need multi-seek call, other function only need seek once and read once.
         synchronized (f.file) {
             if (m_data == null)
-                return this;//保证程序不要出错
+                return none;//保证程序不要出错
             long p = f.node_offset + m_data.children * 20L;
             long n = m_data.num;
             long p2, n2;
@@ -135,7 +161,14 @@ public class Node {
                         p = p2 + 20;
                         n -= n2 + 1;
                     } else {
-                        return new Node(p2, f);
+                        Node res = new Node(p2, f);
+                        if(Configure.NX_Cache){
+                            res.path = cacheKey;
+                            if(cache.size() == 999999)
+                                cache.clear();
+                            cache.put(res.path, res);
+                        }
+                        return res;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -145,12 +178,20 @@ public class Node {
     }
 
     public Node subNode(Object o) {
+        if(m_data == null)
+            return none;
         if(o instanceof Integer)
             return subNode(((Integer) o).intValue());
         return get_child(o.toString());
     }
-    public long getInt(){
-        return getInt(0);
+    public int getInt(){
+        return (int)getInt(0);
+    }
+    public boolean getBool(){
+        return m_data != null && m_data.type == Type.integer && getInt() != 0;
+    }
+    public boolean getBool(boolean def){
+        return m_data != null && m_data.type == Type.integer && getInt() != 0 || def;
     }
     public long getInt(long def){
         if (m_data == null)
@@ -192,6 +233,9 @@ public class Node {
                 System.err.println("Unknown node type");
         }
         return def;
+    }
+    public String getString(){
+        return getString("");
     }
     public String getString(String def){
         if(m_data == null)

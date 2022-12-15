@@ -16,16 +16,17 @@ public class DrawArg {
     float angle;
 
     Color color = new Color(1, 1, 1, 1);
-    public void addPos(int[] _pos){
+    public DrawArg addPos(int[] _pos){
         this.pos[0] = store_pos[0] + _pos[0];
         this.pos[1] = store_pos[1] + _pos[1];
+        return this;
     }
     public DrawArg(int[] _pos){
         store_pos = new int[2];
         store_pos[0] = _pos[0];
         store_pos[1] = _pos[1];
         pos = _pos;
-        stretch = null;
+        stretch = new int[2];
         xscale = yscale = 1;
         angle = 0;
     }
