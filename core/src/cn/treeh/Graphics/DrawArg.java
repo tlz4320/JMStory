@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import java.util.Optional;
 
 public class DrawArg {
-    int[] store_pos;
+    public int[] store_pos;
     //for drag-able component, pos will change because of parent positon
     //therefore, store the original position
     public int[] pos;
@@ -19,6 +19,16 @@ public class DrawArg {
     public DrawArg addPos(int[] _pos){
         this.pos[0] = store_pos[0] + _pos[0];
         this.pos[1] = store_pos[1] + _pos[1];
+        return this;
+    }
+    public DrawArg addPos(int x, int y){
+        this.pos[0] = store_pos[0] + x;
+        this.pos[1] = store_pos[1] + y;
+        return this;
+    }
+    public DrawArg subPos(int[] _pos){
+        this.pos[0] = store_pos[0] - _pos[0];
+        this.pos[1] = store_pos[1] - _pos[1];
         return this;
     }
     public DrawArg(int[] _pos){
@@ -40,6 +50,23 @@ public class DrawArg {
         this.yscale = yscale;
         this.angle = angle;
         this.color = color;
+    }
+    public DrawArg(int[] _pos, int[] stretch, float xscale, float yscale, float angle, float opc){
+        store_pos = new int[2];
+        store_pos[0] = _pos[0];
+        store_pos[1] = _pos[1];
+        this.pos = _pos;
+        this.stretch = stretch;
+        this.xscale = xscale;
+        this.yscale = yscale;
+        this.angle = angle;
+        color.a *= opc;
+    }
+    public DrawArg(int[] _pos, boolean flip){
+        this(_pos, flip, 1);
+    }
+    public DrawArg(int[] _pos, boolean flip, float opc){
+        this(_pos, new int[2], flip ? -1.0f : 1.0f, 1.0f, 0, opc);
     }
     public DrawArg(DrawArg arg, float _xscale, float _yscale, float opc){
         this(arg.pos, arg.stretch, arg.xscale + _xscale, arg.yscale + _yscale, arg.angle,

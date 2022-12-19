@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class store {
+    //sub\[(\"[a-zA-Z]*\")\]
     public static void main(String[] args) {
         FreeTypeFontGenerator.setMaxTextureSize(10000);
         FreeTypeFontGenerator normFont = new FreeTypeFontGenerator(Gdx.files.internal(Configure.FONT_LIGHT));

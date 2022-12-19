@@ -1210,6 +1210,6 @@ public class Convert{
 //                new Convert().convert(file.getAbsolutePath());
 //            }
 //        }
-        new Convert().convert("D:\\program\\project\\JMStory\\wz\\UI.wz");
+        new Convert().convert("D:\\program\\project\\JMStory\\wz\\Map.wz");
     }
 }

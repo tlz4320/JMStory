@@ -8,12 +8,17 @@ import cn.treeh.UI.UI;
 import cn.treeh.Util.Configure;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import static org.lwjgl.opengl.GL.createCapabilities;
+import static org.lwjgl.opengl.GL20.*;
 
 public class JMStory extends ApplicationAdapter {
 
@@ -33,11 +38,13 @@ public class JMStory extends ApplicationAdapter {
 //        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new PerspectiveCamera());
         stage = new Stage();
         sr = new ShapeRenderer();
-        batch = new SpriteBatch();
+        batch = new MBatch();
         Gdx.input.setInputProcessor(stage);
 //        last_time = System.currentTimeMillis();
 //        BgmPlayer.play("BgmUI.img/Title");
-        ui = UI.createUI(batch, stage);
+//        ui = UI.createUI(batch, stage);
+        game = GamePlay.createGamePlay(batch, stage);
+        game.load(100050000, 1);
 //
     }
 
@@ -47,18 +54,18 @@ public class JMStory extends ApplicationAdapter {
 
     void update()
     {
-//        Window::get().check_events();
-//        Window::get().update();
-//        Stage::get().update();
-        ui.update();
-//        Session::get().read();
+
+        game.update();
+//        ui.update();
+
     }
 
     void draw(float alpha)
     {
 //        Window::get().begin();
 //        Stage::get().draw(alpha);
-        ui.draw(alpha);
+        game.draw(alpha);
+//        ui.draw(alpha);
 
 //        Window::get().end();
     }
@@ -79,13 +86,8 @@ public class JMStory extends ApplicationAdapter {
         }
         long elapsed = last_time;
         last_time = System.currentTimeMillis();
-        elapsed = (last_time - elapsed) * 1000;
-
-//        for (accumulator += elapsed; accumulator >= time_step; accumulator -= time_step)
-//        {
-            update();
-//        }
-
+        elapsed = (last_time - elapsed);
+        update();
         float alpha = (float) elapsed/ time_step;
         batch.begin();
         draw(alpha);

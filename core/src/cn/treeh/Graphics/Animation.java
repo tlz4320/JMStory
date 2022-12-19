@@ -12,8 +12,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class Animation {
-    static class Frame {
-        Texture texture;
+    public static class Frame {
+        public Texture texture;
         Rectangle bounds;
         int[] head;
 
@@ -70,7 +70,10 @@ public class Animation {
             return step * (scales[1] - scales[0]) / (float)delay;
         }
         public int[] getDimension(){
-            return texture.dimensions;
+            return texture == null ? new int[2] : texture.dimensions;
+        }
+        public int[] getOrigin(){
+            return texture.origin;
         }
     }
 
@@ -193,5 +196,9 @@ public class Animation {
     public int[] getDimension(){
 
         return getFrame().getDimension();
+    }
+    public int[] getOrigin()
+    {
+        return getFrame().getOrigin();
     }
 }

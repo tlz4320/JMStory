@@ -101,4 +101,7 @@ public class MapInfo {
         int y2;
         boolean ladder;
     };
+    public String getBgm(){
+        return bgm;
+    }
 }

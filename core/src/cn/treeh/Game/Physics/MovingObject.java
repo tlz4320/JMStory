@@ -4,8 +4,8 @@ import cn.treeh.Util.Configure;
 import cn.treeh.Util.InterScaleD;
 
 public class MovingObject {
-    public InterScaleD x;
-    public InterScaleD y;
+    public InterScaleD x = new InterScaleD();
+    public InterScaleD y = new InterScaleD();
     public double hspeed = 0.0;
     public double vspeed = 0.0;
 

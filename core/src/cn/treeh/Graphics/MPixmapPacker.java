@@ -159,6 +159,7 @@ public class MPixmapPacker implements Disposable {
         region.offsetY = (int)(rect.originalHeight - rect.height - rect.offsetY);
         region.originalWidth = rect.originalWidth;
         region.originalHeight = rect.originalHeight;
+        region.setRegion(region.getU(), region.getV2(), region.getU2(), region.getV());
         return region;
 //        return rect;
     }

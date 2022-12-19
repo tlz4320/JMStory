@@ -81,7 +81,7 @@ public class Node {
             if(cache.size() == 999999)
                 cache.clear();
             cache.put(name, sub);
-
+            sub.path = name;
             return sub;
         }
         return new Node(f.node_offset + m_data.children * 20L + index * 20L, f);
@@ -225,6 +225,7 @@ public class Node {
             case audio:
                 return def;
             case integer:
+                return getInt();
             case real:
                 return Double.longBitsToDouble(m_data.union);
             case string:
@@ -254,6 +255,7 @@ public class Node {
                 synchronized (f.file) {
                     long sl = f.string_offset + 8 * m_data.union;
                     f.seek(sl);
+                    f.seek(f.readLong());
                     try {
                         return f.readUTF();
                     } catch (Exception e) {
@@ -284,10 +286,6 @@ public class Node {
 
     public int y() {
         return m_data != null && m_data.type == Type.vector ? (int) (m_data.union >> 32) : 0;
-    }
-
-    public int size() {
-        return m_data.num;
     }
 
     public  Audio getAudio() {

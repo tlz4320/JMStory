@@ -11,7 +11,11 @@ import com.badlogic.gdx.files.FileHandle;
 
 public class BgmPlayer {
     static Music nowPlay = null;
+    static String nowPath = "";
     public static void play(String path){
+        if(nowPath.equals(path))
+            return;
+        nowPath = path;
         Node node = NXFiles.Audio();
         Node n = node.subNode(path);
         byte[] tmp = n.getAudio().data(82);

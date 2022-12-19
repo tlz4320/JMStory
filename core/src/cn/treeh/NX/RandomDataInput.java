@@ -65,7 +65,6 @@ class RandomDataInput implements DataInput {
         nowBuffer.position(nowBuffer.position() + n);
         return n;
     }
-
     @Override
     public boolean readBoolean() throws IOException {
         int ch = Byte.toUnsignedInt(readByte());

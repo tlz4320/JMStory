@@ -41,7 +41,8 @@ public class FootholdTree {
                         System.err.println(e);
                         continue;
                     }
-                    Foothold foothold = footholds.put(id, new Foothold(lastf, id, layer));
+                    Foothold foothold = new Foothold(lastf, id, layer);
+                    footholds.put(id, foothold);
 
                     if (foothold.l() < leftw)
                         leftw = foothold.l();
@@ -80,5 +81,41 @@ public class FootholdTree {
 
     public int[] getBorders() {
         return borders;
+    }
+
+    public int get_y_below(int[] pos) {
+        int fhid = get_fhid_below(pos[0], pos[1]);
+        if (fhid != 0)
+        {
+			Foothold fh = get_fh(fhid);
+
+            return (int)fh.ground_below(pos[0]);
+        }
+		else
+        {
+            return borders[1];
+        }
+    }
+    public Foothold get_fh(int id){
+        return footholds.get(id);
+    }
+    public int get_fhid_below(int fx, int fy) {
+        int ret = 0;
+        double comp = borders[1];
+
+        LinkedList<Integer> range = footholdsbyx.get(fx);
+        if(range == null)
+            return ret;
+        for (int iter : range) {
+            Foothold fh = footholds.get(iter);
+            double ycomp = fh.ground_below(fx);
+
+            if (comp >= ycomp && ycomp >= fy) {
+                comp = ycomp;
+                ret = fh.id();
+            }
+        }
+
+        return ret;
     }
 }
