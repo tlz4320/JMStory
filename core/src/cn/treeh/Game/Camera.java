@@ -34,12 +34,12 @@ public class Camera {
         y.set((double) VHEIGHT / 2 - pos[1]);
     }
     public void setView(int[] mapWalls, int[] mapBorders){
-        hbounds = mapWalls;
-        vbounds = mapBorders;
-        hbounds[0] = -hbounds[0];
-        hbounds[1] = -hbounds[1];
-        vbounds[0] = -vbounds[0];
-        vbounds[1] = -vbounds[1];
+        hbounds = new int[2];
+        vbounds = new int[2];
+        hbounds[0] = -mapWalls[0];
+        hbounds[1] = -mapWalls[1];
+        vbounds[0] = -mapBorders[0];
+        vbounds[1] = -mapBorders[1];
     }
     public int[] position(){
         return new int[]{(int) Math.round(x.get()), (int) Math.round(y.get())};

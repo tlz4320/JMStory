@@ -9,9 +9,34 @@ public class MovingObject {
     public double hspeed = 0.0;
     public double vspeed = 0.0;
 
+    public double ox, oy;
+
+    public void reset() {
+        x.set(ox);
+        y.set(oy);
+    }
+
     public void normalize() {
         x.normalize();
         y.normalize();
+    }
+
+    public void move(int cx, int cy) {
+        x.add(hspeed);
+        y.add(vspeed);
+        //原来的move是一直加下去，到了后面x以及y的结果会很大，而且java会导致inf
+        while (x.get() > 10 * Configure.screenWidth) {
+            x.sub(2 * cx);
+        }
+        while (x.get() < -10 * Configure.screenWidth) {
+            x.add(2 * cx);
+        }
+        while (y.get() > 10 * Configure.screenHeight) {
+            y.sub(2 * cy);
+        }
+        while (y.get() < -10 * Configure.screenHeight) {
+            y.add(2 * cy);
+        }
     }
 
     public void move() {
@@ -20,10 +45,12 @@ public class MovingObject {
     }
 
     public void set_x(double d) {
+        ox = d;
         x.set(d);
     }
 
     public void set_y(double d) {
+        oy = d;
         y.set(d);
     }
 

@@ -24,6 +24,11 @@ public class InterScaleD {
         now += value;
         return this;
     }
+    public InterScaleD sub(double value){
+        before = now;
+        now -= value;
+        return this;
+    }
     public void normalize()
     {
         before = now;

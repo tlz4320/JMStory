@@ -2,6 +2,7 @@ package cn.treeh.Util;
 
 public class Configure {
     public static String FONT_NORMAL = "Alibaba-PuHuiTi-Regular.ttf";
+    public static String FONT_typing = "alibb.fnt";
     public static String FONT_BOLD = "Alibaba-PuHuiTi-Bold.ttf";
     public static String FONT_LIGHT = "Alibaba-PuHuiTi-Regular.ttf";
     public static int VIEW_Y_OFFSET = 10;

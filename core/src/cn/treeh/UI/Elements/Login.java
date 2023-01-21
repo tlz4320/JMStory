@@ -1,4 +1,4 @@
-package cn.treeh.UI.Display;
+package cn.treeh.UI.Elements;
 
 import cn.treeh.Audio.BgmPlayer;
 import cn.treeh.Graphics.Animation;
@@ -13,12 +13,13 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.utils.Align;
 
-public class LoginDisplay extends BaseDisplay{
+public class Login extends UIElement{
 
     public void initButton(){
         Node title = NXFiles.UI().subNode("Login.img/Title");
-        pushButton(new MapleButton(title.subNode("BtLogin"), new int[]{626, 278}, batch, stage) {
+        pushButton(new MapleButton(title.subNode("BtLogin"), new int[]{613, 251}, batch, stage) {
             @Override
             public boolean callback() {
                 return false;
@@ -33,28 +34,31 @@ public class LoginDisplay extends BaseDisplay{
 
     }
     TextField account, password;
-    public LoginDisplay(SpriteBatch b, Stage s){
+    public Login(SpriteBatch b, Stage s){
         super(b, s);
         BgmPlayer.play("BgmUI.img/Title");
         Node login_map = NXFiles.Map().subNode("Obj/login.img");
         Node title = login_map.subNode("Title");
         Node common = NXFiles.UI().subNode("Login.img/Common");
-        pushSprite(new Sprite(new Animation(login_map.subNode("WorldSelect/AncientTreasure/0")), new DrawArg(new int[]{0, 0})));
-        pushSprite(new Sprite(new Animation(title.subNode("Logo")), new DrawArg(new int[]{0, 0})));
+        pushSprite(new Sprite(new Animation(login_map.subNode("WorldSelect/AncientTreasure/0")), new DrawArg(new int[]{400, 300})));
+        pushSprite(new Sprite(new Animation(title.subNode("Logo")), new DrawArg(new int[]{400, 300})));
         Node signboard = title.subNode("signboard");
-        pushSprite(new Sprite(new Animation(signboard.subNode("1").subNode(0)), new DrawArg(new int[]{400, 200})));
-        pushSprite(new Sprite(new Animation(signboard.subNode("4").subNode(0)), new DrawArg(new int[]{460, 355})));
-        pushSprite(new Sprite(new Animation(signboard.subNode("6").subNode(0)), new DrawArg(new int[]{400, 150})));
+        pushSprite(new Sprite(new Animation(signboard.subNode("1").subNode(0)), new DrawArg(new int[]{570, 320})));
+        pushSprite(new Sprite(new Animation(signboard.subNode("4").subNode(0)), new DrawArg(new int[]{390, 480})));
+        pushSprite(new Sprite(new Animation(signboard.subNode("6").subNode(0)), new DrawArg(new int[]{555, 420})));
 //
-        pushSprite(new Sprite(new Animation(common.subNode("frame")) ,new DrawArg(new int[] {0, 0})));
+        pushSprite(new Sprite(new Animation(common.subNode("frame")) ,new DrawArg(new int[] {400, 300})));
         initButton();
         password = TextInput.createTextInput("", Text.bitmapFont);
         password.setMessageText("");
         password.setPasswordCharacter('*');
         password.setPasswordMode(true);
-        password.setPosition(485, 286);
+        password.setPosition(470, 290);
         account = TextInput.createTextInput("", Text.bitmapFont);
-        account.setPosition(485, 316);
+        account.setMessageText("");
+        account.setPosition(470, 260);
+        account.setSize(130, 20);
+        password.setSize(130, 20);
         stage.addActor(password);
         stage.addActor(account);
     }

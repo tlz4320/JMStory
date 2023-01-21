@@ -33,4 +33,7 @@ public class Obj {
     public void draw(int[] pos, float alpha, SpriteBatch batch){
         animation.draw(arg.addPos(pos),alpha, batch);
     }
+    public void update(){
+        animation.update();
+    }
 }

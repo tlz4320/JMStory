@@ -1,4 +1,4 @@
-package cn.treeh.UI.Display;
+package cn.treeh.UI.Elements;
 
 import cn.treeh.Graphics.Sprite;
 import cn.treeh.Graphics.Text;
@@ -8,12 +8,54 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import java.util.LinkedList;
 
-public class BaseDisplay implements Display{
-
+public class UIElement{
+    public enum Type
+    {
+        NONE,
+        START,
+        LOGIN,
+        TOS,
+        GENDER,
+        WORLDSELECT,
+        REGION,
+        CHARSELECT,
+        LOGINWAIT,
+        RACESELECT,
+        CLASSCREATION,
+        SOFTKEYBOARD,
+        LOGINNOTICE,
+        LOGINNOTICE_CONFIRM,
+        STATUSMESSENGER,
+        STATUSBAR,
+        CHATBAR,
+        BUFFLIST,
+        NOTICE,
+        NPCTALK,
+        SHOP,
+        STATSINFO,
+        ITEMINVENTORY,
+        EQUIPINVENTORY,
+        SKILLBOOK,
+        QUESTLOG,
+        WORLDMAP,
+        USERLIST,
+        MINIMAP,
+        CHANNEL,
+        CHAT,
+        CHATRANK,
+        JOYPAD,
+        EVENT,
+        KEYCONFIG,
+        OPTIONMENU,
+        QUIT,
+        CHARINFO,
+        CASHSHOP,
+        NUM_TYPES
+    }
     Stage stage;
     SpriteBatch batch;
 
-    public BaseDisplay(SpriteBatch b, Stage s){
+    public UIElement(SpriteBatch b, Stage s){
         batch = b;
         stage = s;
     }
@@ -39,23 +81,40 @@ public class BaseDisplay implements Display{
             button.draw(position);
         }
     }
-    @Override
+
     public void draw(float alpha) {
         draw_sprites(alpha);
         draw_buttons(alpha);
     }
 
-    @Override
+
     public void dispose() {
         Sprites.clear();
         Buttons.clear();
     }
 
-    @Override
+
     public void update() {
         for (Sprite sprite : Sprites)
         {
             sprite.update();
         }
     }
+    boolean active;
+    public void setActive()
+    {
+        active = true;
+    }
+
+    public void deActive()
+    {
+        active = false;
+    }
+
+    public boolean getActive()
+    {
+        return active;
+    }
+    public void send_key(int keycode, boolean pressed, boolean escape){}
+
 }

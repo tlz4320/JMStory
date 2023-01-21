@@ -70,37 +70,10 @@ public class MapInfo {
         int[] pos;
     };
 
-    class Ladder
+    public boolean isUnderWater()
     {
-        Ladder(Node src){
-            x = src.subNode("x").getInt();
-            y1 = src.subNode("y1").getInt();
-            y2 = src.subNode("y2").getInt();
-            ladder = src.subNode("l").getBool();
-        }
-
-        boolean is_ladder(){
-            return ladder;
-        }
-        boolean inrange(int[] position, boolean upwards){
-            int y = upwards ? position[1] - 5 :
-                    position[1] + 5;
-
-            return Math.abs(position[0] - x) <= 10 && (y1 <= y && y2 >= y);
-        }
-        boolean felloff(int y, boolean downwards){
-            int dy = downwards ? y + 5 : y - 5;
-
-            return dy > y2 || y + 5 < y1;
-        }
-        int get_x(){
-            return x;
-        }
-        int x;
-        int y1;
-        int y2;
-        boolean ladder;
-    };
+        return swim;
+    }
     public String getBgm(){
         return bgm;
     }

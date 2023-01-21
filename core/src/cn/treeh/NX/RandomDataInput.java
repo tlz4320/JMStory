@@ -44,12 +44,14 @@ class RandomDataInput implements DataInput {
         if(Integer.toUnsignedLong(len + nowBuffer.position()) > maxVal){
             if(nowBuffer.position() == maxVal) {
                 nowBuffer = byteBuffer[++nowIndex];
+                nowBuffer.position(0);
                 readFully(b, off, len);
                 return;
             }
             int left = Integer.MAX_VALUE - nowBuffer.position();
             byteBuffer[nowIndex].get(b, off, left);
             nowBuffer = byteBuffer[++nowIndex];
+            nowBuffer.position(0);
             readFully(b, off + left, len - left);
         }
         else
@@ -59,8 +61,10 @@ class RandomDataInput implements DataInput {
     @Override
     public int skipBytes(int n) throws IOException {
         if(Integer.toUnsignedLong(n + nowBuffer.position()) > maxVal){
+            n -= (Integer.MAX_VALUE - nowBuffer.position());
             nowBuffer = byteBuffer[++nowIndex];
-            skipBytes(n - (Integer.MAX_VALUE - nowBuffer.position()));
+            nowBuffer.position(0);
+            skipBytes(n);
         }
         nowBuffer.position(nowBuffer.position() + n);
         return n;
@@ -75,6 +79,7 @@ class RandomDataInput implements DataInput {
     public byte readByte() throws IOException {
         if(byteBuffer[nowIndex].position() == Integer.MAX_VALUE){
             nowBuffer = byteBuffer[++nowIndex];
+            nowBuffer.position(0);
         }
         return nowBuffer.get();
     }

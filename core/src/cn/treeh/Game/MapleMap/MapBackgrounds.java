@@ -29,12 +29,25 @@ public class MapBackgrounds {
         black = src.subNode("0/bS").getString().length() == 0;
     }
 
-    public void draw(double[] realpos, float alpha, SpriteBatch batch) {
+    public void drawBack(double[] realpos, float alpha, SpriteBatch batch) {
         if (black)
             ScreenUtils.clear(0, 0, 0, 1);
         for (MapBackground background : backgrounds)
             background.draw(realpos[0], realpos[1], alpha, batch);
+
+    }
+    public void drawFore(double[] realpos, float alpha, SpriteBatch batch) {
+        if (black)
+            ScreenUtils.clear(0, 0, 0, 1);
         for (MapBackground background : foregrounds)
             background.draw(realpos[0], realpos[1], alpha, batch);
+
+    }
+
+    public void update(){
+        for (MapBackground background : backgrounds)
+            background.update();
+        for (MapBackground background : foregrounds)
+            background.update();
     }
 }

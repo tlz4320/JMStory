@@ -6,18 +6,20 @@ import java.util.HashMap;
 
 public class NXFiles {
     static private NxFile Item, Audio, Mob, UI, Map,
-            String, Skill, Quest, Reactor, Npc;
+            String, Skill, Quest, Reactor, Npc, Character, Effect;
     static{
         Item = new NxFile(Gdx.files.internal("Item.nx").file());
         String = new NxFile(Gdx.files.internal("String.nx").file());
         Audio = new NxFile(Gdx.files.internal("Sound.nx").file());
         UI = new NxFile(Gdx.files.internal("UI.nx").file());
         Map = new NxFile(Gdx.files.internal("Map.nx").file());
-//        Skill = new NxFile(Gdx.files.internal("Skill.nx").file());
-//        Mob = new NxFile(Gdx.files.internal("Mob.nx").file());
-//        Quest = new NxFile(Gdx.files.internal("Quest.nx").file());
-//        Reactor = new NxFile(Gdx.files.internal("Reactor.nx").file());
-//        Npc = new NxFile(Gdx.files.internal("Npc.nx").file());
+        Skill = new NxFile(Gdx.files.internal("Skill.nx").file());
+        Mob = new NxFile(Gdx.files.internal("Mob.nx").file());
+        Quest = new NxFile(Gdx.files.internal("Quest.nx").file());
+        Reactor = new NxFile(Gdx.files.internal("Reactor.nx").file());
+        Npc = new NxFile(Gdx.files.internal("Npc.nx").file());
+        Character = new NxFile(Gdx.files.internal("Character.nx").file());
+        Effect = new NxFile(Gdx.files.internal("Effect.nx").file());
     }
     public static Node Item(){
         return Item.getNode();
@@ -48,5 +50,11 @@ public class NXFiles {
     }
     public static Node Npc(){
         return Npc.getNode();
+    }
+    public static Node Character(){
+        return Character.getNode();
+    }
+    public static Node Effect(){
+        return Effect.getNode();
     }
 }

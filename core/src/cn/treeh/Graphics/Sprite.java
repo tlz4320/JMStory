@@ -16,4 +16,7 @@ public class Sprite {
     public boolean update(){
         return animation.update();
     }
+    public boolean update(int s){
+        return animation.update(s);
+    }
 }

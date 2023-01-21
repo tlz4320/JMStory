@@ -64,4 +64,14 @@ public class MapTiles {
         }
 
     }
+    public void update(){
+        for(int i = 0; i < 8; i++){
+            if (objLayer[i] != null) {
+                for (Map.Entry<Integer, LinkedList<Obj>> entry : objLayer[i].entrySet()) {
+                    for (Obj obj : entry.getValue())
+                        obj.update();
+                }
+            }
+        }
+    }
 }

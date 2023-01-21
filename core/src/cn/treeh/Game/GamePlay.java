@@ -1,18 +1,12 @@
 package cn.treeh.Game;
 
-import cn.treeh.Audio.BgmPlayer;
 import cn.treeh.Game.Combat.Combat;
 import cn.treeh.Game.MapleMap.Map;
-import cn.treeh.Game.MapleMap.MapNPCs;
-import cn.treeh.Game.MapleMap.MapReactors;
-import cn.treeh.Game.Physics.Physics;
+import cn.treeh.Game.Player.Char;
+import cn.treeh.Game.Player.Look.CharLook;
 import cn.treeh.Game.Player.Player;
-import cn.treeh.NX.NXFiles;
-import cn.treeh.NX.Node;
-import cn.treeh.UI.UI;
-import cn.treeh.Util.StringUtil;
+import cn.treeh.IO.Net.LookEntry;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -30,7 +24,7 @@ public class GamePlay {
     SpriteBatch batch;
     static GamePlay instance;
     Camera camera;
-    Player player;
+    Player player = new Player();
     State state;
     Map map;
 
@@ -44,8 +38,13 @@ public class GamePlay {
         instance = new GamePlay(b, s);
         return instance;
     }
-
+    public void loadPlayer(){
+        player = new Player(100,
+                new CharLook(new LookEntry(0, 20402, 30027)),
+                "测试");
+    }
     public void init() {
+        Char.init();
         map.init();
     }
 
@@ -64,7 +63,7 @@ public class GamePlay {
         map.BGM();
         int[] spawnpoint = map.getPortalByID(portalid);
         int[] startpos = map.get_y_below(spawnpoint);
-//        player.respawn(startpos, mapinfo.is_underwater());
+        player.respawn(startpos, map.isUnderWater());
         camera.setPos(startpos);
         camera.setView(map.getWalls(), map.getBorders());
     }
@@ -115,10 +114,10 @@ public class GamePlay {
         map.drawBackground(realpos, alpha, batch);
         for (int id = 0; id < 8; id++) {
             map.drawLayer(id, viewpos, realpos, alpha, batch);
-//            player.draw()
+            player.draw(id, realpos, alpha, batch);
 //            map.drawDrop();
         }
-
+        map.drawForeground(realpos, alpha, batch);
 //        combat.draw()
 
     }
@@ -130,7 +129,7 @@ public class GamePlay {
     public void load_map(int mapId) {
         map = new Map(mapId);
     }
-    int[] tmppos = new int[]{0, 0};
+    int[] tmppos = new int[]{-1093, 2108};
     int key = -1;
     public void update() {
         if (state != State.ACTIVE)
@@ -145,6 +144,7 @@ public class GamePlay {
         if(key == 3)
             tmppos[1] += 10;
         camera.setPos(tmppos);
+        player.update(map.getPhysics());
 //        combat.update();
 //        backgrounds.update();
 //        effect.update();

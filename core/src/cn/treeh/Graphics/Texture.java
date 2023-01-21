@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Texture {
     Bitmap bitmap;
-    public int[] origin;
-    public int[] dimensions;
+    public int[] origin = new int[2];
+    public int[] dimensions = new int[2];
 
     TextureRegion region;
     public Texture(Node src){
@@ -23,11 +23,17 @@ public class Texture {
             region = TexturePacker.get().addBitmap(bitmap);
         }
     }
-
+    public boolean isValid(){
+        return bitmap != null;
+    }
+    public void shift(int[] amount){
+        origin[0] -= amount[0];
+        origin[1] -= amount[1];
+    }
     public void draw(DrawArg arg, SpriteBatch batch){
         batch.setColor(arg.color);
-        batch.draw(region, (float) (arg.pos[0] - origin[0]),
-                (float) (arg.pos[1] - origin[1] ),
+        batch.draw(region, arg.pos[0] - origin[0],
+                arg.pos[1] - origin[1],
                 origin[0], origin[1],
                 arg.stretch[0] != 0 ? arg.stretch[0] : dimensions[0],
                 arg.stretch[1] != 0 ? arg.stretch[1] : dimensions[1],

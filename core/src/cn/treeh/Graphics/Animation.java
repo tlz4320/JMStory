@@ -110,7 +110,7 @@ public class Animation {
     boolean zigzag;
     int delay;
     int framestep;
-    void reset()
+    public void reset()
     {
         opacity.set(frames.get().opacities[0]);
         xy_scale.set(frames.get().scales[0]);
@@ -125,7 +125,7 @@ public class Animation {
         float inter_opc = opacity.get(alpha) / 255;
         float inter_scale = xy_scale.get(alpha) / 100;
         if(inter_opc != 1.0f && inter_scale != 1.0f) {
-            drawArg = arg.add(drawArg, inter_scale, inter_scale, inter_opc);
+            drawArg = arg.addNew(inter_scale, inter_scale, inter_opc);
             frame.draw(drawArg, batch);
         }
         else{

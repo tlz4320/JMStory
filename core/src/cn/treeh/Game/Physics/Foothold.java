@@ -10,6 +10,11 @@ public class Foothold {
     boolean fallDown;
     int[] m_horizontal;
     int[] m_vertical;
+    public Foothold(){
+        m_id = m_layer = m_next = m_prev = 0;
+        m_horizontal = new int[2];
+        m_vertical = new int[2];
+    }
     public Foothold(Node src, int id, int layer){
         m_prev = src.subNode("prev").getInt();
         m_next = src.subNode("next").getInt();

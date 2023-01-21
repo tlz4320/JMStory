@@ -59,12 +59,9 @@ public class MapBackground {
         movingObject = new MovingObject();
         movingObject.set_x(src.subNode("x").getReal());
         movingObject.set_y(src.subNode("y").getReal());
-
-        type = typebyid(src.subNode("type").getInt());
-
+        Type type = typebyid(src.subNode("type").getInt());
         settype(type);
     }
-    Type type;
     void settype(Type type) {
 
         int dim_x = animation.getDimension()[0];
@@ -153,5 +150,9 @@ public class MapBackground {
         for (int tx = 0; tx < tw; tx += cx)
             for (int ty = 0; ty < th; ty += cy)
                 animation.draw(arg.addPos(tx, ty), alpha, batch);
+    }
+    public void update(){
+        movingObject.move(cx, cy);
+        animation.update();
     }
 }

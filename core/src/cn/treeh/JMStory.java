@@ -1,13 +1,19 @@
 package cn.treeh;
 
+import cn.treeh.Audio.BgmPlayer;
 import cn.treeh.Game.GamePlay;
+import cn.treeh.Game.Player.Look.BodyDrawInfo;
 import cn.treeh.Graphics.*;
 import cn.treeh.NX.NXFiles;
 import cn.treeh.NX.Node;
+import cn.treeh.UI.Component.Cursor;
 import cn.treeh.UI.UI;
 import cn.treeh.Util.Configure;
+import cn.treeh.Util.MStage;
+import cn.treeh.Util.O;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,7 +21,11 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.github.tommyettinger.textra.TextraLabel;
+import com.github.tommyettinger.textra.TypingLabel;
 
 import static org.lwjgl.opengl.GL.createCapabilities;
 import static org.lwjgl.opengl.GL20.*;
@@ -33,19 +43,25 @@ public class JMStory extends ApplicationAdapter {
     int accumulator = time_step;
 
     long last_time = 0;
+    Cursor cursor;
+    TextraLabel label;
     @Override
     public void create() {
 //        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new PerspectiveCamera());
-        stage = new Stage();
+        stage = new MStage();
         sr = new ShapeRenderer();
         batch = new MBatch();
         Gdx.input.setInputProcessor(stage);
 //        last_time = System.currentTimeMillis();
-//        BgmPlayer.play("BgmUI.img/Title");
-//        ui = UI.createUI(batch, stage);
-        game = GamePlay.createGamePlay(batch, stage);
-        game.load(100050000, 1);
-//
+        BgmPlayer.play("BgmUI.img/Title");
+        ui = UI.createUI(batch, stage);
+
+//        game = GamePlay.createGamePlay(batch, stage);
+//        game.init();
+//        game.load(100050000, 1);
+//        cursor = Cursor.get();
+//        game.loadPlayer();
+//        game.respawn(1);
     }
 
 
@@ -55,17 +71,19 @@ public class JMStory extends ApplicationAdapter {
     void update()
     {
 
-        game.update();
-//        ui.update();
+//        game.update();
+        ui.update();
 
     }
 
     void draw(float alpha)
+
     {
 //        Window::get().begin();
 //        Stage::get().draw(alpha);
-        game.draw(alpha);
-//        ui.draw(alpha);
+//        game.draw(alpha);
+//        cursor.draw(alpha, batch);
+        ui.draw(alpha);
 
 //        Window::get().end();
     }
@@ -93,8 +111,7 @@ public class JMStory extends ApplicationAdapter {
         draw(alpha);
         batch.end();
         stage.act();
-//        stage.act();
-//        stage.draw();
+
     }
 //    public void reshape(int width, int height){
 //        viewport.update(width, height);

@@ -17,6 +17,40 @@ public abstract class MapleButton extends Button{
         this.stage = stage;
     }
     DrawArg drawArg;
+    public void addListener(){
+        addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+//                if (!super.touchDown(event, x, y, pointer, button)) return false;
+                setState(State.PRESSED);
+//                Cursor.get().setState(Cursor.State.CANCLICK);
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                callback();
+//                Cursor.get().setState(Cursor.State.CANCLICK);
+                setState(State.MOUSEOVER);
+            }
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                super.exit(event, x, y, pointer, toActor);
+                if (toActor == null || !isOver(toActor, x,y)){
+                    setState(State.NORMAL);
+                }
+//                Cursor.get().setState(Cursor.State.IDLE);
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                if(!isPressed()) {
+                    setState(State.MOUSEOVER);
+//                    Cursor.get().setState(Cursor.State.CANCLICK);
+                }
+            }
+        });
+    }
     public MapleButton(Node src, int[] pos,  SpriteBatch b, Stage stage){
         super(b, stage);
         texture[State.PRESSED.ordinal()] = new Texture(src.subNode("pressed/0"));
@@ -28,34 +62,7 @@ public abstract class MapleButton extends Button{
         state = State.NORMAL;
         active = true;
 
-        addListener(new ClickListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-//                if (!super.touchDown(event, x, y, pointer, button)) return false;
-                setState(State.PRESSED);
-                return super.touchDown(event, x, y, pointer, button);
-            }
-
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                callback();
-                setState(State.MOUSEOVER);
-            }
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                super.exit(event, x, y, pointer, toActor);
-                if (toActor == null || !isOver(toActor, x,y)){
-                    setState(State.NORMAL);
-                }
-                System.out.println("test2");
-            }
-
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                if(!isPressed())
-                    setState(State.MOUSEOVER);
-            }
-        });
+        addListener();
         stage.addActor(this);
     }
     public void draw(int[] parentpos)

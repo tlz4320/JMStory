@@ -921,6 +921,8 @@ public class Convert{
     void write_nodes() throws Exception{
         fileWriter.seek(node_offset);
         for(node n : orderedNode) {
+            if(n.name == 33)
+                O.ptln("aa");
             makeNode((int)n.name, (int)n.children, (n.type.value << 16) | n.num, n.data);
             fileWriter.write(nodedata);
 //            fileWriter.writeInt((int)n.name);
@@ -1207,9 +1209,10 @@ public class Convert{
 //        File[] files= new File("D:\\program\\project\\JMStory\\wz").listFiles();
 //        for(File file : files){
 //            if(file.getName().endsWith("wz")){
+//                O.ptln(file.getName());
 //                new Convert().convert(file.getAbsolutePath());
 //            }
 //        }
-        new Convert().convert("D:\\program\\project\\JMStory\\wz\\Map.wz");
+        new Convert().convert("D:\\program\\project\\JMStory\\wz\\Character.wz2");
     }
 }

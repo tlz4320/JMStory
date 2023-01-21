@@ -98,7 +98,7 @@ public class Node {
             m_data.name = f.readInt();
             m_data.children = f.readInt();
             long tmp = f.readInt();
-            m_data.num = (int) tmp & 0xFF;
+            m_data.num = (int) tmp & 0xFFFF;
             m_data.type = Type.getType((int) tmp >> 16);
             m_data.union = f.readLong();
         } catch (Exception e) {
@@ -267,6 +267,8 @@ public class Node {
         return def;
     }
     public String getName() {
+        if(m_data == null)
+            return "";
         f.seek(f.string_offset + m_data.name * 8L);
         f.seek(f.readLong());
         return f.readUTF();

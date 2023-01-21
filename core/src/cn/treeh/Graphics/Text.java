@@ -15,13 +15,16 @@ public class Text {
     public static Font texraFont;
     public static BitmapFont bitmapFont;
     static {//初始化字体
-        texraFont = new Font(Configure.FONT_NORMAL);
+        texraFont = new Font(Configure.FONT_typing);
+        texraFont.scaleY = -0.5f;
+        texraFont.scaleX = 0.5f;
         FreeTypeFontGenerator.setMaxTextureSize(10000);
         FreeTypeFontGenerator normFont = new FreeTypeFontGenerator(Gdx.files.internal(Configure.FONT_LIGHT));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.characters = Gdx.files.internal("charset.txt").readString("UTF8");
         parameter.minFilter = com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
         parameter.magFilter = Texture.TextureFilter.Linear;
+        parameter.flip = true;
         parameter.size = 14;
         bitmapFont = normFont.generateFont(parameter);
     }

@@ -56,7 +56,13 @@ public class Map {
         return mapInfo.mapborders;
     }
     public void drawBackground(double[] realpos, float alpha, SpriteBatch batch){
-        backgrounds.draw(realpos, alpha, batch);
+        backgrounds.drawBack(realpos, alpha, batch);
+    }
+    public void drawForeground(double[] realpos, float alpha, SpriteBatch batch){
+        backgrounds.drawFore(realpos, alpha, batch);
+    }
+    public boolean isUnderWater(){
+        return mapInfo.isUnderWater();
     }
     public void drawLayer(int layer, int[] pos, double[] realpos, float alpha, SpriteBatch batch){
         tiles.draw(layer, pos, alpha, batch);
@@ -65,10 +71,39 @@ public class Map {
 //        mobs.draw(layer, viewx, viewy, alpha);
 //        chars.draw(layer, viewx, viewy, alpha);
     }
+    public Physics getPhysics(){
+        return physics;
+    }
     public int[]get_y_below(int[] pos){
         return physics.get_y_below(pos);
     }
     public void update(Player player){
-//        tiles.update();
+
+
+//        combat.update();
+        backgrounds.update();
+        tiles.update();
+
+//        reactors.update(physics);
+//        npcs.update(physics);
+//        mobs.update(physics);
+//        chars.update(physics);
+//        drops.update(physics);
+//        player.update(physics);
+//
+//        portals.update(player.get_position());
+//        camera.update(player.get_position());
+//
+//        if (player.is_invincible())
+//            return;
+//
+//        if (int32_t oid_id = mobs.find_colliding(player.get_phobj()))
+//        {
+//            if (MobAttack attack = mobs.create_attack(oid_id))
+//            {
+//                MobAttackResult result = player.damage(attack);
+//                TakeDamagePacket(result, TakeDamagePacket::TOUCH).dispatch();
+//            }
+//        }
     }
 }
