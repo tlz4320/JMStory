@@ -1,4 +1,4 @@
-package cn.treeh.UI.Component;
+package cn.treeh.UI.Component.Tooltip;
 
 import com.badlogic.gdx.Gdx;
 

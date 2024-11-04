@@ -1,5 +1,8 @@
-package cn.treeh.NX;
+package cn.treeh.NX.Export;
 
+import cn.treeh.NX.Bitmap;
+import cn.treeh.NX.Node;
+import cn.treeh.NX.NxFile;
 import cn.treeh.Util.O;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

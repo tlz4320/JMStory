@@ -1,5 +1,8 @@
-package cn.treeh.NX;
+package cn.treeh.NX.Export;
 
+import cn.treeh.NX.Bitmap;
+import cn.treeh.NX.Node;
+import cn.treeh.NX.NxFile;
 import cn.treeh.Util.O;
 
 import javax.imageio.ImageIO;
@@ -41,7 +44,7 @@ public class Export_back {
         if (delay == 0)
             delay = 100;
         Bitmap bitmap = node.getBitmap();
-        if(bitmap.width + now_width > width){
+        if(bitmap.getWidth() + now_width > width){
             now_width = 0;
             now_height += 5 + maxHeight;
             maxHeight = 0;
@@ -59,7 +62,7 @@ public class Export_back {
             maxWidth = 0;
             id++;
         }
-        packer.setRGB(now_width, now_height, bitmap.width, bitmap.height, cvC(bitmap.data(), bitmap.length()), 0, bitmap.width);
+        packer.setRGB(now_width, now_height, bitmap.getWidth(), bitmap.height, cvC(bitmap.data(), bitmap.length()), 0, bitmap.width);
         regions.add(new AbstractMap.SimpleEntry<>(key + "_" + index,
                 new int[]{now_width, now_height, bitmap.width, bitmap.height, delay, id}));
         now_width += 5 + bitmap.width;

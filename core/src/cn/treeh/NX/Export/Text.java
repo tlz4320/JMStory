@@ -1,7 +1,9 @@
-package cn.treeh.NX;
+package cn.treeh.NX.Export;
 
 import cn.treeh.Game.MapleMap.Obj;
 import cn.treeh.Game.MapleMap.Tile;
+import cn.treeh.NX.Node;
+import cn.treeh.NX.NxFile;
 import cn.treeh.Util.O;
 import com.badlogic.gdx.graphics.Pixmap;
 

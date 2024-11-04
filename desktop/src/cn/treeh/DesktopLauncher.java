@@ -1,6 +1,7 @@
 package cn.treeh;
 
 import cn.treeh.Util.Configure;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import cn.treeh.JMStory;
@@ -14,6 +15,6 @@ public class DesktopLauncher {
 		config.setWindowSizeLimits(Configure.screenWidth, Configure.screenHeight,
 				Configure.screenWidth, Configure.screenHeight);
 		config.setTitle("JMStory");
-		new Lwjgl3Application(new JMStory(), config);
+	    new Lwjgl3Application(new JMStory(), config);
 	}
 }
