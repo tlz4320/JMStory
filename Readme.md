@@ -14,4 +14,6 @@ Any thing totally in java. Music used jmp123 NX use NolifeNX but write by my sel
 
 现在这个项目已经完成了对于WZ文件的转码，转化为支持UTF格式的nx文件，因此可以天然对各种语言版本的Wz进行支持。
 
-整体上，我想完全抛开journalStory的思路，对于鼠标控制直接由组件直接注册actor而不是通过一层层往下传鼠标操作信号，我认为耦合度有点高，每次都要实现cend_cur的函数，并且可读性也很低，不如直接在组件内根据自己需要的操作直接绑定actor
+整体上，我想完全抛开journalStory的思路，对于鼠标控制直接由组件直接注册actor而不是通过一层层往下传鼠标操作信号，我认为耦合度有点高，每次都要实现send_cur的函数，并且可读性也很低，不如直接在组件内根据自己需要的操作直接绑定actor
+
+不过目前大体上还是抄JournalStory的代码，大致计划是先把JournalStory的代码吃透了，能够跑起来再进行补充和优化
