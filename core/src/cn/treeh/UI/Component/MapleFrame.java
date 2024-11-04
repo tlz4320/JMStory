@@ -17,6 +17,22 @@ public class MapleFrame {
     Texture southeast;
     int xtile;
     int ytile;
+    public MapleFrame(Node src, String type){
+        if(type.equals("Map")){
+            center = new Texture(src.subNode("c"));
+            east = new Texture(src.subNode("4"));
+            northeast = new Texture(src.subNode("2"));
+            north = new Texture(src.subNode("1"));
+            northwest = new Texture(src.subNode("0"));
+            west = new Texture(src.subNode("3"));
+            southwest = new Texture(src.subNode("5"));
+            south = new Texture(src.subNode("6"));
+            southeast = new Texture(src.subNode("7"));
+
+            xtile = Math.max(north.dimensions[0], 1);
+            ytile = Math.max(north.dimensions[1], 1);
+        }
+    }
     public MapleFrame(Node src)
     {
         center = new Texture(src.subNode("c"));

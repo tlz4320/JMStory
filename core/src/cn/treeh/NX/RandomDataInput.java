@@ -140,9 +140,8 @@ class RandomDataInput implements DataInput {
         StringBuilder input = new StringBuilder();
         int c = -1;
         boolean eol = false;
-
         while (!eol) {
-            switch (c = read()) {
+            switch (c = readByte()) {
                 case -1:
                 case '\n':
                     eol = true;

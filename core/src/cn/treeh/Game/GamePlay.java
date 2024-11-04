@@ -33,7 +33,9 @@ public class GamePlay {
     public static GamePlay getInstance() {
         return instance;
     }
-
+    public Player getPlayer(){
+        return player;
+    }
     public static GamePlay createGamePlay(SpriteBatch b, Stage s) {
         instance = new GamePlay(b, s);
         return instance;
@@ -80,7 +82,7 @@ public class GamePlay {
                     key = -1;
                 if(keycode == Input.Keys.DOWN)
                     key = -1;
-                return super.keyUp(event, keycode);
+                return true;
             }
 
             @Override
@@ -93,7 +95,7 @@ public class GamePlay {
                     key = 2;
                 if(keycode == Input.Keys.DOWN)
                     key = 3;
-                return super.keyDown(event, keycode);
+                return true;
             }
         });
     }
@@ -115,10 +117,10 @@ public class GamePlay {
         for (int id = 0; id < 8; id++) {
             map.drawLayer(id, viewpos, realpos, alpha, batch);
             player.draw(id, realpos, alpha, batch);
-//            map.drawDrop();
+            //map.drawDrop();
         }
         map.drawForeground(realpos, alpha, batch);
-//        combat.draw()
+        //combat.draw();
 
     }
 
@@ -129,7 +131,7 @@ public class GamePlay {
     public void load_map(int mapId) {
         map = new Map(mapId);
     }
-    int[] tmppos = new int[]{-1093, 2108};
+    int[] tmppos = new int[]{-3500,300};
     int key = -1;
     public void update() {
         if (state != State.ACTIVE)

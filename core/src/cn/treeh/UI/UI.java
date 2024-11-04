@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 public class UI {
@@ -30,14 +31,13 @@ public class UI {
         batch = b;
         display = new UIStateLogin(b,s);
     }
-    LinkedList<UIElement.Type> types = new LinkedList<>();
+    HashSet<UIElement.Type> types = new HashSet<>();
     public void sendKey(int key, boolean pressed) {
         if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) && Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
             //缩放屏幕
             return;
         }
-        caps_locked = Toolkit.getDefaultToolkit().getLockingKeyState(
-                KeyEvent.VK_CAPS_LOCK);
+        caps_locked = Gdx.input.isKeyJustPressed(Input.Keys.CAPS_LOCK) != caps_locked;
 
         KeyMapping mapping = Keyboard.getMapping(key);
         types.clear();
@@ -125,12 +125,15 @@ public class UI {
     }
     UIState display;
     public void draw(float alpha){
-        display.draw(alpha, new int[]{Gdx.input.getX(), Gdx.input.getY()});
+        display.draw(alpha, batch);
     }
     public void update(){
         display.update();
     }
     public void dispose(){
 //        display.dispose();
+    }
+    public void remove(UIElement.Type type){
+        display.remove(type);
     }
 }

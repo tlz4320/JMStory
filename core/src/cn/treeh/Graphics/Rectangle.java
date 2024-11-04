@@ -9,6 +9,9 @@ public class Rectangle {
         this.lt = lt;
         this.rb = rb;
     }
+    public Rectangle(int left, int right, int top, int bottom){
+        this(new int[]{left, top}, new int[]{right, bottom});
+    }
     public Rectangle(Node node){
         lt = node.subNode("lt").getVector();
         rb = node.subNode("rb").getVector();

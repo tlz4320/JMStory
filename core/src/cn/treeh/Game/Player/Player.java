@@ -1,33 +1,43 @@
 package cn.treeh.Game.Player;
 
+import cn.treeh.Game.Inventory.EquipStat;
+import cn.treeh.Game.Inventory.Inventory;
 import cn.treeh.Game.MapleMap.Ladder;
+import cn.treeh.Game.Movement;
 import cn.treeh.Game.Physics.Physics;
+import cn.treeh.Game.Player.Buffer.Buff;
+import cn.treeh.Game.Player.Buffer.BuffStat;
+import cn.treeh.Game.Player.Buffer.PassiveBuffs;
 import cn.treeh.Game.Player.Look.CharLook;
 import cn.treeh.Util.TimedBool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.util.HashMap;
+import java.util.Random;
+import java.util.TreeMap;
+
 public class Player extends Char{
     CharStat stats;
-//    Inventory inventory;
+    Inventory inventory;
 //    SkillBook skillbook;
 //    QuestLog questlog;
 //    TeleportRock teleportrock;
-//    MonsterBook monsterbook;
-//
-//    EnumMap<Buffstat::Id, Buff> buffs;
-//    ActiveBuffs active_buffs;
-//    PassiveBuffs passive_buffs;
-//
-//    std::unordered_map<int32_t, int32_t> cooldowns;
-//
-//    std::map<KeyAction::Id, bool> keysdown;
-//
-//    Movement lastmove;
+    MonsterBook monsterbook;
 
-//    Randomizer randomizer;
+    HashMap<BuffStat.Id, Buff> buffs = new HashMap<>();
+    ActiveBuffs active_buffs;
+    PassiveBuffs passive_buffs;
+
+    TreeMap<Integer, Integer> cooldowns = new TreeMap<>();
+
+    HashMap<KeyAction.Id, Boolean> keysdown = new HashMap<>();
+
+    Movement lastmove;
+
+    Random randomizer = new Random();
 //
     Ladder ladder;
-    TimedBool climb_cooldown;
+    TimedBool climb_cooldown = new TimedBool();
 
     boolean underwater;
     public Player(int o, CharLook lk, String name) {
@@ -39,6 +49,11 @@ public class Player extends Char{
     public Ladder getLadder(){
         return ladder;
     }
+
+    public CharStat getStats() {
+        return stats;
+    }
+
     public void setState(Char.State st){
         if(!attacking){
             super.setState(st);

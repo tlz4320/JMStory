@@ -1,14 +1,38 @@
-package cn.treeh.Game.Player;
+package cn.treeh.Game.Player.Job;
 
+import cn.treeh.Game.Inventory.EquipStat;
 import cn.treeh.Game.Inventory.Weapon;
 
 public class Job {
+
+    public Job(int i){
+        change_job(i);
+    }
+    public Job(){
+        this(0);
+    }
+    public void change_job(int i)
+	{
+		id = i;
+		name = getName(id);
+
+		if (id == 0)
+			level = Level.BEGINNER;
+		else if (id % 100 == 0)
+			level = Level.FIRST;
+		else if (id % 10 == 0)
+			level = Level.SECOND;
+		else if (id % 10 == 1)
+			level = Level.THIRD;
+		else
+			level = Level.FOURTH;
+	}
     public enum Level {
         BEGINNER,
         FIRST,
         SECOND,
         THIRD,
-        FOURTHT
+        FOURTH
     }
     public static Level get_next_level(Level level)
     {
@@ -21,7 +45,7 @@ public class Job {
             case SECOND:
                 return Level.THIRD;
             default:
-                return Level.FOURTHT;
+                return Level.FOURTH;
         }
     }
 
@@ -65,8 +89,8 @@ public class Job {
                 case SECOND:
                     return (id / 10) * 10;
                 case THIRD:
-                    return (level == Level.FOURTHT) ? id - 1 : id;
-                case FOURTHT:
+                    return (level == Level.FOURTH) ? id - 1 : id;
+                case FOURTH:
                     return id;
             }
         }
@@ -201,4 +225,22 @@ public class Job {
                 return EquipStat.Id.DEX;
         }
     }
+
+    boolean is_sub_job(int subid)
+	{
+		for (Level lv : Level.values())
+		{
+			if (subid == getSubJob(lv))
+				return true;
+		}
+
+		return false;
+	}
+
+	boolean can_use(int skill_id)
+	{
+		int required = (skill_id / 10000);
+		return is_sub_job(required);
+	}
+
 }

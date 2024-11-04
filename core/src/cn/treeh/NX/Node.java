@@ -134,7 +134,7 @@ public class Node {
         //therefore add lock before to make it safe
         //I think it won't influence performance badly
         //Because except get_child need multi-seek call, other function only need seek once and read once.
-        synchronized (f.file) {
+        synchronized (f) {
             if (m_data == null)
                 return none;//保证程序不要出错
             long p = f.node_offset + m_data.children * 20L;
@@ -252,7 +252,7 @@ public class Node {
             case real:
                 return getReal() + "";
             case string: {
-                synchronized (f.file) {
+                synchronized (f) {
                     long sl = f.string_offset + 8 * m_data.union;
                     f.seek(sl);
                     f.seek(f.readLong());
@@ -295,7 +295,7 @@ public class Node {
             int audioLen = (int) (m_data.union >> 32);
             int audioIndex = (int) m_data.union;
             long pos = f.audio_offset + audioIndex * 8L;
-            synchronized (f.file) {
+            synchronized (f) {
                 f.seek(pos);
                 pos = f.readLong();
             }
@@ -310,7 +310,7 @@ public class Node {
             int width = (int) (m_data.union >> 32) & 0xFFFF;
             int height = (int) (m_data.union >> 48);
             long pos = f.bitmap_offset + bitmapIndex * 8L;
-            synchronized (f.file) {
+            synchronized (f) {
                 f.seek(pos);
                 pos = f.readLong();
             }

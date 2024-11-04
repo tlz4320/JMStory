@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import java.util.LinkedList;
 
 public class UIElement{
+
     public enum Type
     {
         NONE,
@@ -60,6 +61,14 @@ public class UIElement{
         stage = s;
     }
     int[] position = new int[2];
+    int[] dimension = new int[2];
+
+    public boolean inRange(int[] pos)
+    {
+        return (pos[0] > position[0] && pos[0] < position[0] + dimension[0]) &&
+                (pos[1] > position[1] && pos[1] < position[1] + dimension[1]);
+
+    }
     LinkedList<Sprite> Sprites = new LinkedList<>();
     LinkedList<Button> Buttons = new LinkedList<>();
 //    LinkedList<> Buttons = new LinkedList();
@@ -116,5 +125,20 @@ public class UIElement{
         return active;
     }
     public void send_key(int keycode, boolean pressed, boolean escape){}
-
+    public void toggle_active()
+    {
+        if (active)
+            deActive();
+        else
+            setActive();
+    }
+    public boolean getToggle(){
+        return false;
+    }
+    public boolean getFocus(){
+        return false;
+    }
+    public Type getType(){
+        return Type.NONE;
+    }
 }

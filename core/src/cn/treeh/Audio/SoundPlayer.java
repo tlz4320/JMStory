@@ -1,6 +1,7 @@
 package cn.treeh.Audio;
 
 import cn.treeh.Audio.util.BitFileHandle;
+import cn.treeh.NX.Audio;
 import cn.treeh.NX.NXFiles;
 import cn.treeh.NX.Node;
 import com.badlogic.gdx.Gdx;
@@ -32,5 +33,15 @@ public class SoundPlayer {
     }
     public static void play(String name){
         play(name, null);
+    }
+    public static void play(Audio audio){
+        if(sounds.containsKey(audio.idStr())){
+            sounds.get(audio.idStr()).play();
+        } else {
+            Sound sound = Gdx.audio.newSound(new BitFileHandle(audio.data(82)));
+            sounds.put(audio.idStr(), sound);
+            sound.play();
+        }
+
     }
 }

@@ -44,6 +44,19 @@ public class Effects {
         for(LinkedList<Effect> es : effects.values())
             es.removeIf(Effect::update);
     }
+    public void add(Animation animation)
+	{
+		add(animation, new DrawArg(), 0, 1.0f);
+	}
+    public void add(Animation animation, DrawArg args, int z)
+	{
+		add(animation, args, z, 1.0f);
+	}
+
+	public void add(Animation animation, DrawArg args)
+	{
+		add(animation, args, 0, 1.0f);
+	}
     public void add(Animation animation, DrawArg arg, int z, float speed){
         LinkedList<Effect> tmp = effects.getOrDefault(z, new LinkedList<>());
         tmp.add(new Effect(new Sprite(animation, arg), speed));

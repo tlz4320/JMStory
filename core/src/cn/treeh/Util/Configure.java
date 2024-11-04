@@ -10,5 +10,5 @@ public class Configure {
     public static int screenWidth = 800;
     public static int TIME_STEP = 8;
     public static boolean NX_Cache = true;
-
+    
 }

@@ -93,4 +93,9 @@ public class CharEquips {
         else
             return false;
     }
+
+	int getWeapon()
+	{
+		return getEquip(EquipSlot.Id.WEAPON);
+	}
 }

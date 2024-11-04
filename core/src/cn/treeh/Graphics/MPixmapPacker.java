@@ -283,7 +283,7 @@ public class MPixmapPacker implements Disposable {
             if (packer.pages.size == 0) {
                 // Add a page if empty.
                 page = new GuillotinePage(packer);
-                page.updateTexture(TextureFilter.Linear, TextureFilter.Linear);
+                page.updateTexture(TextureFilter.Nearest, TextureFilter.Nearest);
                 packer.pages.add(page);
             } else {
                 // Always try to pack into the last page.
@@ -297,7 +297,7 @@ public class MPixmapPacker implements Disposable {
             if (node == null) {
                 // Didn't fit, pack into a new page.
                 page = new GuillotinePage(packer);
-                page.updateTexture(TextureFilter.Linear, TextureFilter.Linear);
+                page.updateTexture(TextureFilter.Nearest, TextureFilter.Nearest);
                 packer.pages.add(page);
                 node = insert(page.root, rect);
             }

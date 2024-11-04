@@ -35,15 +35,17 @@ public class Face {
         pain,
         shine,
         vomit,
-        wink
+        wink;
+
+        public static Id byAction(int action){
+            action -= 98;
+            if(action < 24)
+                return Id.values()[action];
+            return Id.def;
+        }
     }
-    Id byAction(int action){
-        action -= 98;
-        if(action < 24)
-            return Id.values()[action];
-        return Id.def;
-    }
-    class Frame{
+
+    static class Frame{
         Texture texture;
         int delay;
         public Frame(Node src){
@@ -69,7 +71,7 @@ public class Face {
                 if(expressions[Id.def.ordinal()] == null)
                     expressions[Id.def.ordinal()] = new TreeMap<>();
                 expressions[Id.def.ordinal()].put(0,
-                        new Frame(faceNode.subNode("default")));
+                    new Frame(faceNode.subNode("default")));
             }
             else{
                 Node expNode = faceNode.subNode(i.name());

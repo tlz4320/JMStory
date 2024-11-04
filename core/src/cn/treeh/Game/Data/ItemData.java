@@ -3,154 +3,199 @@ package cn.treeh.Game.Data;
 import cn.treeh.Graphics.Texture;
 import cn.treeh.NX.NXFiles;
 import cn.treeh.NX.Node;
+import cn.treeh.Util.BoolPair;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.AbstractMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class ItemData {
-    static TreeMap<Integer, ItemData> cache = new TreeMap<>();
-    // Creates an item from the game's Item file with the specified id
-    public static ItemData get(int itemid){
-        if(cache.containsKey(itemid))
-            return cache.get(itemid);
-        ItemData data = new ItemData(itemid);
-        cache.put(itemid, data);
-        return data;
-    }
+	static TreeMap<Integer, ItemData> cache = new TreeMap<>();
+	boolean valid, untradable, unique, unsellable, cashitem;
+	int gender, itemid, price;
+	String name, desc, category;
 
-    ItemData(int itemid){
+	//first is true second is false
+	BoolPair<Texture> icons = new BoolPair<>();
 
-        this.itemid = itemid;
-        untradable = unique = unsellable = cashitem = false;
-        gender = 0;
-        Node src = null, str_src = null;
-        String str_prefix = "0" + getItemPrefix(itemid);
-        String str_id = "0" + itemid;
-        int prefix = getPrefix(itemid);
-        switch (prefix){
-            case 1:
-                category = getCategory(itemid);
-                src = NXFiles.Character().subNode(category).
-                        subNode(str_id + ".img").subNode("info");
-                str_src = NXFiles.String().subNode("Eqp.img").
-                        subNode("Eqp").subNode(category).
-                        subNode("" + itemid);
-                break;
-            case 2:
-                category = "Consume";
-                src = NXFiles.Item().subNode("Consume").
-                        subNode(str_prefix + ".img").subNode(str_id)
-                        .subNode("info");
-                str_src =NXFiles.String().subNode("Consume.img")
-                        .subNode("" + itemid);
-                break;
-            case 3:
-                category = "Install";
-                src = NXFiles.Item().subNode("Install").subNode(str_prefix + ".img").
-                        subNode(str_id).subNode("info");
-                str_src = NXFiles.String().subNode("Ins.img").subNode("" + itemid);
-                break;
-            case 4:
-                category = "Etc";
-                src = NXFiles.Item().subNode("Etc").subNode(str_prefix + ".img").
-                        subNode(str_id).subNode("info");
-                str_src = NXFiles.String().subNode("Etc.img").subNode("Etc").
-                        subNode("" + itemid);
-                break;
-            case 5:
-                category = "Cash";
-                src = NXFiles.Item().subNode("Cash").subNode(str_prefix + ".img").
-                    subNode(str_id).subNode("info");
-                str_src = NXFiles.String().subNode("Cash.img").subNode("" + itemid);
-                break;
-        }
-        if (src != null)
-        {
-            icons_false= new Texture(src.subNode("icon"));
-            icons_true= new Texture(src.subNode("iconRaw"));
-            price = src.subNode("price").getInt();
-            untradable = src.subNode("tradeBlock").getBool();
-            unique = src.subNode("only").getBool();
-            unsellable = src.subNode("notSale").getBool();
-            cashitem = src.subNode("cash").getBool();
-            gender = getItemGender(itemid);
+	static int get_item_prefix(int id)
+	{
+		return id / 10000;
+	}
+	static int get_prefix(int id)
+	{
+		return id / 1000000;
+	}
+	static String[] categorynames = new String[]
+			{
+				"Cap",
+				"Accessory",
+				"Accessory",
+				"Accessory",
+				"Coat",
+				"Longcoat",
+				"Pants",
+				"Shoes",
+				"Glove",
+				"Shield",
+				"Cape",
+				"Ring",
+				"Accessory",
+				"Accessory",
+				"Accessory"
+			};
 
-            name = str_src.subNode("name").getString();
-            desc = str_src.subNode("desc").getString();
+	static String get_eqcategory(int id)
+	{
+		int index = get_item_prefix(id) - 100;
+		if (index < 15)
+			return categorynames[index];
+		else if (index >= 30 && index <= 70)
+			return "Weapon";
+		else
+			return "";
+	}
+	int get_item_gender(int id)
+	{
+		int item_prefix = get_item_prefix(id);
 
-            valid = true;
-        }
-        else
-        {
-            valid = false;
-        }
-    }
-    static String[] cats =
-    {
-        "Cap",
-                "Accessory",
-                "Accessory",
-                "Accessory",
-                "Coat",
-                "Longcoat",
-                "Pants",
-                "Shoes",
-                "Glove",
-                "Shield",
-                "Cape",
-                "Ring",
-                "Accessory",
-                "Accessory",
-                "Accessory"
-    };
-    String getCategory(int itemid){
-        itemid = getItemPrefix(itemid) - 100;
-        if(itemid < 15)
-            return cats[itemid];
-        else if(itemid >= 30 && itemid <= 70)
-            return "Weapon";
-        return "";
-    }
-    int getPrefix(int itemid){
-        return itemid / 1000000;
-    }
-    int getItemPrefix(int itemid){
-        return itemid / 10000;
-    }
-    int getItemGender(int itemid) {
+		if ((get_prefix(id) != 1 && item_prefix != 254) || item_prefix == 119 || item_prefix == 168)
+			return 2;
 
-        int item_prefix = getItemPrefix(itemid);
+		int gender_digit = id / 1000 % 10;
 
-        if ((getPrefix(itemid) != 1 && item_prefix != 254) || item_prefix == 119 || item_prefix == 168)
-            return 2;
+		return (gender_digit > 1) ? 2 : gender_digit;
+	}
+	public static ItemData getItemData(int id){
+		if(cache.containsKey(id)){
+			return cache.get(id);
+		} else {
+			ItemData it = new ItemData(id);
+			cache.put(id, it);
+			return(it);
+		}
+	}
+	private ItemData(int id){
+		untradable = false;
+		unique = false;
+		unsellable = false;
+		cashitem = false;
+		gender = 0;
 
-        int gender_digit = itemid / 1000 % 10;
+		Node src = null, strsrc = null;
+		String strprefix = "0" + get_item_prefix(itemid);
+		String strid = "0" + itemid;
+		int prefix = get_prefix(itemid);
 
-        return (gender_digit > 1) ? 2 : gender_digit;
+		switch (prefix)
+		{
+			case 1:
+				category = get_eqcategory(itemid);
+				src = NXFiles.Character().subNode(category).subNode(strid + ".img").subNode("info");
+				strsrc = NXFiles.String().subNode("Eqp.img").subNode("Eqp").subNode(category).subNode("" + itemid);
+				break;
+			case 2:
+				category = "Consume";
+				src = NXFiles.Item().subNode("Consume").subNode(strprefix + ".img").subNode(strid).subNode("info");
+				strsrc = NXFiles.String().subNode("Consume.img").subNode("" + itemid);
+				break;
+			case 3:
+				category = "Install";
+				src = NXFiles.Item().subNode("Install").subNode(strprefix + ".img").subNode(strid).subNode("info");
+				strsrc = NXFiles.String().subNode("Ins.img").subNode("" + itemid);
+				break;
+			case 4:
+				category = "Etc";
+				src = NXFiles.Item().subNode("Etc").subNode(strprefix + ".img").subNode(strid).subNode("info");
+				strsrc = NXFiles.String().subNode("Etc.img").subNode("Etc").subNode("" + itemid);
+				break;
+			case 5:
+				category = "Cash";
+				src = NXFiles.Item().subNode("Cash").subNode(strprefix + ".img").subNode(strid).subNode("info");
+				strsrc = NXFiles.String().subNode("Cash.img").subNode("" + itemid);
+				break;
+		}
 
-    }
+		if (src != null)
+		{
+			icons.setFalse(new Texture(src.subNode("icon")));
+			icons.setTrue(new Texture(src.subNode("iconRaw")));
+			price = src.subNode("price").getInt();
+			untradable = src.subNode("tradeBlock").getBool();
+			unique = src.subNode("only").getBool();
+			unsellable = src.subNode("notSale").getBool();
+			cashitem = src.subNode("cash").getBool();
+			gender = get_item_gender(itemid);
 
-    Texture icons_false, icons_true;
-    int itemid;
-    int price;
-    int gender;
-    String name;
-    String desc;
+			name = strsrc.subNode("name").getString();
+			desc = strsrc.subNode("desc").getString();
 
-    public String getCategory() {
-        return category;
-    }
+			valid = true;
+		}
+		else
+		{
+			valid = false;
+		}
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
 
-    String category;
+	}
+	boolean is_valid()
+	{
+		return valid;
+	}
 
-    boolean valid;
-    boolean untradable;
-    boolean unique;
-    boolean unsellable;
-    boolean cashitem;
+	boolean is_untradable()
+	{
+		return untradable;
+	}
+
+	boolean is_unique()
+	{
+		return unique;
+	}
+
+	boolean is_unsellable()
+	{
+		return unsellable;
+	}
+
+	boolean is_cashitem()
+	{
+		return cashitem;
+	}
+
+	int get_id()
+	{
+		return itemid;
+	}
+
+	int get_price()
+	{
+		return price;
+	}
+
+	int get_gender()
+	{
+		return gender;
+	}
+
+	 String get_name()
+	{
+		return name;
+	}
+
+	 String get_desc()
+	{
+		return desc;
+	}
+
+	 String get_category()
+	{
+		return category;
+	}
+
+	 Texture get_icon(boolean raw)
+	{
+		return icons.get(raw);
+	}
 }

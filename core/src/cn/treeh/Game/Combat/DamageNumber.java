@@ -29,7 +29,7 @@ public class DamageNumber {
         }
         return res;
     }
-    DamageNumber(Type t, int damage, int starty, int x)
+    public DamageNumber(Type t, int damage, int starty, int x)
     {
         type = t;
         num = damage;

@@ -9,7 +9,7 @@ import java.util.zip.Inflater;
 
 public class Bitmap {
     long pos;
-    int width;
+    public int width;
     public long getID(){
         return pos;
     }
@@ -21,7 +21,7 @@ public class Bitmap {
         return height;
     }
 
-    int height;
+    public int height;
     NxFile f;
     public Bitmap(long pos, int width, int height, NxFile f){
         this.pos = pos;
@@ -50,7 +50,7 @@ public class Bitmap {
     public ByteBuffer data(){
         if(pos<0)
             return ByteBuffer.allocate(0);
-        synchronized (f.file) {
+        synchronized (f) {
             try {
                 f.seek(pos);
                 int size = (int)f.readInt();

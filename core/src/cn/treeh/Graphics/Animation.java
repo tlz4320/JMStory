@@ -25,7 +25,7 @@ public class Animation {
             texture = new Texture(src);
             bounds = new Rectangle(src);
             head = src.subNode("head").getVector();
-            delay = (int) src.subNode("delay").getInt();
+            delay = src.subNode("delay").getInt();
             if (delay == 0)
                 delay = 100;
             Node a0 = src.subNode("a0");

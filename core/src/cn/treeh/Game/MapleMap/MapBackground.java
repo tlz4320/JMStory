@@ -38,7 +38,6 @@ public class MapBackground {
     float opacity;
     boolean flipped;
     MovingObject movingObject;
-
     public MapBackground(Node src) {
         VWIDTH = Configure.screenWidth;
         VHEIGHT = Configure.screenHeight;

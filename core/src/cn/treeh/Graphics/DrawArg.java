@@ -31,6 +31,15 @@ public class DrawArg {
         this.pos[1] = store_pos[1] - _pos[1];
         return this;
     }
+    public DrawArg(){
+        this(new int[]{0, 0});
+    }
+    public DrawArg(float xscale, float yscale, float opacity){
+        this(new int[]{0, 0}, xscale, yscale, opacity);
+    }
+    public DrawArg(boolean flip){
+        this(flip ? -1.0f : 1.0f, 1.0f, 1.0f);
+    }
     public DrawArg(int[] _pos){
         store_pos = new int[2];
         store_pos[0] = _pos[0];
@@ -110,5 +119,8 @@ public class DrawArg {
     }
     public void setFlip(boolean x){
         xscale *= x ? -1 : 1;
+    }
+    public void setOpacity(float opc){
+        color.a = opc;
     }
 }

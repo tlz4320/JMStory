@@ -2,13 +2,14 @@ package cn.treeh.UI;
 
 import cn.treeh.IO.Key.KeyType;
 import cn.treeh.UI.Component.Icon;
-import cn.treeh.UI.Component.Tooltip;
+import cn.treeh.UI.Component.Tooltip.Tooltip;
 import cn.treeh.UI.Elements.Login;
 import cn.treeh.UI.Elements.UIElement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -31,6 +32,11 @@ public class UIStateLogin implements UIState{
 
         if (tooltip != null)
             tooltip.draw(cursor);
+    }
+
+    @Override
+    public void draw(float inter, SpriteBatch batch) {
+
     }
 
     @Override
@@ -105,12 +111,21 @@ public class UIStateLogin implements UIState{
     }
 
     @Override
+    public UIElement get_front(HashSet<UIElement.Type> types) {
+        return null;
+    }
+
     public UIElement get_front(LinkedList<UIElement.Type> types) {
         return null;
     }
 
     @Override
     public UIElement get_front(int[] cursor_position) {
+        return null;
+    }
+
+    @Override
+    public UIElement pre_add(UIElement.Type type, boolean is_toggled, boolean is_focused) {
         return null;
     }
 }

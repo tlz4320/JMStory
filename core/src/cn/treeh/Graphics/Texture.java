@@ -31,6 +31,8 @@ public class Texture {
         origin[1] -= amount[1];
     }
     public void draw(DrawArg arg, SpriteBatch batch){
+        if(region == null)
+            return;
         batch.setColor(arg.color);
         batch.draw(region, arg.pos[0] - origin[0],
                 arg.pos[1] - origin[1],

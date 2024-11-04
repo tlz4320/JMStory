@@ -1,17 +1,63 @@
 package cn.treeh.Game.Player.Look;
 
+import cn.treeh.Audio.SoundPlayer;
+import cn.treeh.Game.Data.WeaponData;
 import cn.treeh.Graphics.DrawArg;
 import cn.treeh.IO.Net.LookEntry;
 import cn.treeh.Util.Nominal;
 import cn.treeh.Util.TimedBool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.sql.Time;
+import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Random;
 import java.util.TreeMap;
 
 public class CharLook {
+    enum Attack
+		{
+            NONE,
+            S1A1M1D,
+            SPEAR,
+            BOW,
+            CROSSBOW,
+			S2A2M2,
+			WAND,
+			CLAW,
+            Useless,
+			GUN,
+			NUM_ATTACKS
+		};
+    static Stance.Id[][]degen_stances =
+			{
+                    { Stance.Id.none },
+				{ Stance.Id.none },
+				{ Stance.Id.none },
+				{ Stance.Id.swingT1, Stance.Id.swingT3 },
+				{ Stance.Id.swingT1, Stance.Id.stabT1 },
+				{ Stance.Id.none },
+				{ Stance.Id.none },
+				{ Stance.Id.swingT1, Stance.Id.stabT1 },
+				{ Stance.Id.none },
+				{ Stance.Id.swingP1, Stance.Id.stabT2 }
 
-
+            };
+    static Stance.Id[][] attack_stances =
+			{
+				{ Stance.Id.none },
+				{ Stance.Id.stabO1, Stance.Id.stabO2,
+                Stance.Id.swingO1, Stance.Id.swingO2, Stance.Id.swingO3 },
+				{ Stance.Id.stabT1, Stance.Id.swingP1 },
+				{ Stance.Id.shoot1 },
+				{ Stance.Id.shoot2 },
+				{ Stance.Id.stabO1, Stance.Id.stabO2,
+                Stance.Id.swingT1, Stance.Id.swingT2, Stance.Id.swingT3 },
+				{ Stance.Id.swingO1, Stance.Id.swingO2 },
+				{ Stance.Id.swingO1, Stance.Id.swingO2 },
+				{ Stance.Id.none },
+				{ Stance.Id.shot }
+			};
     Nominal<Stance.Id> stance = new Nominal<>();
     Nominal<Integer> stframe = new Nominal<>();
     int stelapsed;
@@ -32,14 +78,59 @@ public class CharLook {
     Face face;
     CharEquips equips = new CharEquips();
 
-    Random randomizer;
-    TimedBool alerted;
+    Random randomizer = new Random();
+    TimedBool alerted = new TimedBool();
 
     static BodyDrawInfo drawinfo = new BodyDrawInfo();
     static TreeMap<Integer, Hair> hairstyles = new TreeMap<>();
     static TreeMap<Integer, Face> facetypes = new TreeMap<>();
     static TreeMap<Integer, Body> bodytypes = new TreeMap<>();
+    public void set_alerted(int millis)
+	{
+		alerted.setTime(millis);
+	}
+    public Stance.Id getattackstance(int attack, boolean degenerate)
+	{
+		if (stance.get() == Stance.Id.prone)
+			return Stance.Id.proneStab;
 
+		if (attack <= 0 || attack >= 10)
+			return Stance.Id.stand1;
+
+		Stance.Id[] stances = degenerate ? degen_stances[attack] : attack_stances[attack];
+
+		if (stances.length == 0)
+			return Stance.Id.stand1;
+
+		int index = randomizer.nextInt(stances.length);
+
+		return stances[index];
+	}
+    public void set_action(String acstr)
+	{
+        if (acstr.equals(actionstr) || acstr.isEmpty())
+			return;
+
+		Stance.Id ac_stance = Stance.byString(acstr);
+        if(ac_stance != Stance.Id.none)
+		{
+			set_stance(ac_stance);
+		}
+		else
+		{
+			action = drawinfo.getAction(acstr, 0);
+
+			if (action != null)
+			{
+				actframe = 0;
+				stelapsed = 0;
+				actionstr = acstr;
+
+				stance.set(action.getStance());
+				stframe.set(action.getFrame());
+			}
+		}
+	}
     public void set_stance(Stance.Id newstance) {
         if (action != null || newstance == Stance.Id.none)
             return;
@@ -410,4 +501,42 @@ public class CharLook {
     public static void init(){
         drawinfo.init();
     }
+
+    public void attack(boolean degenerate)
+	{
+		int weapon_id = equips.getWeapon();
+
+		if (weapon_id <= 0)
+			return;
+
+		WeaponData weapon = WeaponData.get(weapon_id);
+
+		int attacktype = weapon.get_attack();
+
+		if (attacktype == 9 && !degenerate)
+		{
+			stance.set(Stance.Id.shot);
+			set_action("handgun");
+		}
+		else
+		{
+			stance.set(getattackstance(attacktype, degenerate));
+			stframe.set(0);
+			stelapsed = 0;
+		}
+
+        SoundPlayer.play(weapon.get_usesound(degenerate));
+	}
+
+	public void attack(Stance.Id newstance)
+	{
+		if (action != null || newstance == Stance.Id.none)
+			return;
+
+        if (Objects.requireNonNull(newstance) == Stance.Id.shot) {
+            set_action("handgun");
+        } else {
+            set_stance(newstance);
+        }
+	}
 }

@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.TreeMap;
 
 public class TexturePacker {
-    private TexturePacker(){}
+    public TexturePacker(){}
     TreeMap<Long, TextureRegion> Regions;
     MPixmapPacker buffer;
     static TexturePacker packer;
@@ -17,7 +17,7 @@ public class TexturePacker {
         if (packer == null) {
             packer = new TexturePacker();
             packer.Regions = new TreeMap<>();
-            packer.buffer = new MPixmapPacker(8192, 8192, Pixmap.Format.RGBA8888, 2, false);
+            packer.buffer = new MPixmapPacker(8192, 8192, Pixmap.Format.RGBA8888, 0, false);
         }
         return packer;
     }
