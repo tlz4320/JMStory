@@ -1,8 +1,8 @@
 package cn.treeh.Game.Player.Buffer;
 
 public class Buff {
-    BuffStat.Id stat;
-    int value;
+    public BuffStat.Id stat;
+    public int value;
     int skillid;
     int duration;
 

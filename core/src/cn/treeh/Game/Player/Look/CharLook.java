@@ -15,7 +15,7 @@ import java.util.Random;
 import java.util.TreeMap;
 
 public class CharLook {
-    enum Attack
+    public enum Attack
 		{
             NONE,
             S1A1M1D,
@@ -501,7 +501,13 @@ public class CharLook {
     public static void init(){
         drawinfo.init();
     }
+    public void remove_equip(EquipSlot.Id slot)
+	{
+		equips.remove_equip(slot);
 
+		if (slot == EquipSlot.Id.WEAPON)
+			updatetwohanded();
+	}
     public void attack(boolean degenerate)
 	{
 		int weapon_id = equips.getWeapon();
@@ -539,4 +545,27 @@ public class CharLook {
             set_stance(newstance);
         }
 	}
+
+	public int get_attackdelay(int no, int first_frame)
+	{
+		if (action != null)
+		{
+			return drawinfo.getAttackDelay(actionstr, no);
+		}
+		else
+		{
+			int delay = 0;
+
+			for (int frame = 0; frame < first_frame; frame++)
+				delay += get_delay(stance.get(), frame);
+			return delay;
+		}
+	}
+
+    public CharEquips getEquips() {
+        return equips;
+    }
+    public Stance.Id getStrance(){
+        return stance.get();
+    }
 }

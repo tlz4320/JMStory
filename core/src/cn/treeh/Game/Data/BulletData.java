@@ -43,7 +43,7 @@ public class BulletData {
 		return watk;
 	}
 
-	 Animation get_animation()
+	 public Animation get_animation()
 	{
 		return bullet;
 	}

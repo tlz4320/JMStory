@@ -5,13 +5,17 @@ import cn.treeh.Game.MapleMap.Ladder;
 import cn.treeh.Game.Physics.PhysicsObject;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.audio.Sound;
 
-public class PlayerStat extends Actor {
+public abstract class PlayerStat {
+    static Sound jumpSound = SoundPlayer.getSound("jump", "Game.img/Jump");
+    public abstract void sendAction(Player player, boolean down);
     public void jumpSound() {
-        SoundPlayer.play("jump", "Game.img/Jump");
+        jumpSound.play();
     }
-
+    public boolean jumpInput(){
+        return Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT);
+    }
     public boolean walkInput() {
         return Gdx.input.isKeyPressed(Input.Keys.LEFT) ^ Gdx.input.isKeyPressed(Input.Keys.RIGHT);
     }
@@ -34,7 +38,10 @@ public class PlayerStat extends Actor {
         return Gdx.input.isKeyPressed(Input.Keys.DOWN);
 
     }
+    public boolean upInput(){
+        return Gdx.input.isKeyPressed(Input.Keys.UP);
 
+    }
     public void updateDef(Player player) {
         Char.State state = null;
         if (player.getPhobj().onground) {

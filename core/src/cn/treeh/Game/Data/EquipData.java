@@ -155,7 +155,7 @@ public class EquipData {
 		return eqslot == EquipSlot.Id.WEAPON;
 	}
 
-	int get_reqstat(MapleStat.Id stat)
+	public int get_reqstat(MapleStat.Id stat)
 	{
 		return reqstats.get(stat);
 	}
@@ -175,7 +175,7 @@ public class EquipData {
 		return type;
 	}
 
-	ItemData get_itemdata()
+	public ItemData get_itemdata()
 	{
 		return itemData;
 	}

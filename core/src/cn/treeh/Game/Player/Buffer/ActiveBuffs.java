@@ -5,9 +5,9 @@ import cn.treeh.Game.Player.CharStat;
 
 import java.util.HashMap;
 
-public class ActivateBuffs {
+public class ActiveBuffs {
 	static HashMap<BuffStat.Id, ActiveBuff> buffs = new HashMap<>();
-	public ActivateBuffs(){
+	public ActiveBuffs(){
 		buffs.put(BuffStat.Id.MAPLE_WARRIOR, new MapleWarriorBuff());
 		buffs.put(BuffStat.Id.STANCE, new StanceBuff());
 		buffs.put(BuffStat.Id.BOOSTER, new BoosterBuff());
@@ -21,7 +21,7 @@ public class ActivateBuffs {
 		buffs.put(BuffStat.Id.HYPERBODYMP, new PercentageStatBuff(EquipStat.Id.MP));
 	}
 	// Return the buff effect associated with the buff stat
-	void apply_buff(CharStat stats, BuffStat.Id stat, int value){
+	public void apply_buff(CharStat stats, BuffStat.Id stat, int value){
 		ActiveBuff	buff = buffs.get(stat);
 		if ( buff != null)
 			buff.apply_to(stats, value);

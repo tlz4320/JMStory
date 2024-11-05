@@ -88,8 +88,8 @@ public class Clothing {
 
     static HashMap<String, Layer> sublayernames = new HashMap<>();
     public Clothing(int id, BodyDrawInfo drawinfo){
-        EquipData equipData = EquipData.get(itemid);
-        slot = equipData.getSlot();
+        EquipData equipData = EquipData.getEquipData(itemid);
+        slot = equipData.get_eqslot();
         twohanded = slot == EquipSlot.Id.WEAPON && WeaponData.get(itemid).isTwohanded();
         int NON_WEAPON_TYPES = 15;
         int WEAPON_OFFSET = NON_WEAPON_TYPES + 15;
@@ -105,7 +105,7 @@ public class Clothing {
         chlayer = Clothing.Layer.CAPE;
 
         String strid = "0" + itemid;
-        String category = equipData.getItemdata().getCategory();
+        String category = equipData.get_itemdata().get_category();
         Node src = NXFiles.Character().subNode(category).subNode(strid + ".img");
         Node info = src.subNode("info");
 

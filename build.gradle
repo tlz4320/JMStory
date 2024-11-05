@@ -21,7 +21,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = "JMStory"
-        gdxVersion = '1.11.0'
+        gdxVersion = '1.12.1'
         roboVMVersion = '2.3.16'
         box2DLightsVersion = '1.5'
         ashleyVersion = '1.7.4'
@@ -61,10 +61,10 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-        api "org.lwjgl:lwjgl-lz4:3.3.1:natives-windows"
-        api "org.lwjgl:lwjgl-lz4:3.3.1"
-        api "org.lwjgl:lwjgl-zstd:3.3.1:natives-windows"
-        api "org.lwjgl:lwjgl-zstd:3.3.1"
+        api "org.lwjgl:lwjgl-lz4:3.3.3:natives-macos"
+        api "org.lwjgl:lwjgl-lz4:3.3.3"
+        api "org.lwjgl:lwjgl-zstd:3.3.1:natives-macos"
+        api "org.lwjgl:lwjgl-zstd:3.3.3"
         api "com.github.tommyettinger:textratypist:0.7.4"
     }
 }

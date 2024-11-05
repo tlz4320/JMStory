@@ -53,4 +53,10 @@ public class AfterImage {
         if(!displayed && stframe >= first)
             displayed = animation.update(time_step);
     }
+    public int getFirstFrame(){
+        return first;
+    }
+    public Rectangle getRange(){
+        return range;
+    }
 }

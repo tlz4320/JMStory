@@ -54,7 +54,7 @@ public class MapInfo {
     }
 
 
-    class Seat{
+    public static class Seat{
         
         Seat(Node source){
             pos = source.getVector();
@@ -64,7 +64,7 @@ public class MapInfo {
             return Math.abs(pos[0] - position[0]) <= 10 &&
                     Math.abs(pos[1] - position[1]) <= 10;
         }
-        int[] getpos(){
+        public int[] getpos(){
             return pos;
         }
         int[] pos;

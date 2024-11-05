@@ -1,6 +1,8 @@
 package cn.treeh.Game.Player;
 
 import cn.treeh.Game.Combat.DamageNumber;
+import cn.treeh.Game.Data.WeaponData;
+import cn.treeh.Game.Inventory.Weapon;
 import cn.treeh.Game.MapleMap.MapObject;
 import cn.treeh.Game.Physics.Physics;
 import cn.treeh.Game.Physics.PhysicsObject;
@@ -23,19 +25,19 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class Char extends MapObject {
-    enum State {
+public abstract class Char extends MapObject {
+    public enum State {
         //分别数值是245610
         WALK,
-        STAND,
-        FALL,
-        ALERT,
-        PRONE,
-        SWIM,
-        LADDER,
-        ROPE,
-        DIED,
-        SIT;
+    STAND,
+    FALL,
+    ALERT,
+    PRONE,
+    SWIM,
+    LADDER,
+    ROPE,
+    DIED,
+    SIT;
         public static State by_value(int v){
             return State.values()[(v - 1) / 2];
         }
@@ -107,17 +109,17 @@ public class Char extends MapObject {
             if (pet.getId() != 0) {
                 switch (state) {
                     case LADDER:
-                    case ROPE:
-                        pet.setStance(PetLook.Stance.HANG);
-                        break;
-                    case SWIM:
-                        pet.setStance(PetLook.Stance.FLY);
-                        break;
-                    default:
-                        if (pet.getStance() == PetLook.Stance.HANG || pet.getStance() == PetLook.Stance.FLY)
-                            pet.setStance(PetLook.Stance.STAND);
+                        case ROPE:
+                            pet.setStance(PetLook.Stance.HANG);
+                            break;
+                            case SWIM:
+                                pet.setStance(PetLook.Stance.FLY);
+                                break;
+                                default:
+                                    if (pet.getStance() == PetLook.Stance.HANG || pet.getStance() == PetLook.Stance.FLY)
+                                        pet.setStance(PetLook.Stance.STAND);
 
-                        break;
+                                    break;
                 }
 
                 pet.update(physics, getPosition());
@@ -136,6 +138,7 @@ public class Char extends MapObject {
     public PhysicsObject getPhobj(){
         return phobj;
     }
+    public abstract int get_level();
     public void setDirection(boolean right){
         if(!attacking){
             facing_right = right;
@@ -146,24 +149,25 @@ public class Char extends MapObject {
     public boolean isClimbing(){
         return state == State.LADDER || state == State.ROPE;
     }
+    public abstract int get_skilllevel(int sk);
     @Override
     public int getLayer() {
         return isClimbing() ? 7 : super.getLayer();
     }
     public void setState(int statebyte){
         if (statebyte % 2 == 1)
-		{
-			setDirection(false);
+        {
+            setDirection(false);
 
-			statebyte -= 1;
-		}
-		else
-		{
-			setDirection(true);
-		}
+            statebyte -= 1;
+        }
+        else
+        {
+            setDirection(true);
+        }
 
-		Char.State newstate = Char.State.by_value(statebyte);
-		setState(newstate);
+        Char.State newstate = Char.State.by_value(statebyte);
+        setState(newstate);
     }
     public void setState(State st)
     {
@@ -182,242 +186,225 @@ public class Char extends MapObject {
     }
 
     public float getStancespeed()
-	{
-		if (attacking)
-			return getRealAttackspeed();
+    {
+        if (attacking)
+            return getRealAttackspeed();
 
-		switch (state)
-		{
-		case WALK:
-            return (float)Math.abs(phobj.hspeed);
-		case LADDER:
-		case ROPE:
-            return (float)Math.abs(phobj.vspeed);
-		default:
-			return 1.0f;
-		}
-	}
+        switch (state)
+        {
+            case WALK:
+                return (float)Math.abs(phobj.hspeed);
+                case LADDER:
+                    case ROPE:
+                        return (float)Math.abs(phobj.vspeed);
+                        default:
+                            return 1.0f;
+        }
+    }
+    abstract int get_integer_attackspeed();
+    public float getRealAttackspeed()
+    {
+        int speed = get_integer_attackspeed();
 
-	public float getRealAttackspeed()
-	{
-		int speed = get_integer_attackspeed();
+        return 1.7f - speed / 10f;
+    }
 
-		return 1.7f - speed / 10f;
-	}
-
-	public int getAttackdelay(int no)
-	{
-		int first_frame = afterImage.get_first_frame();
-		int delay = look.get_attackdelay(no, first_frame);
-		float fspeed = getRealAttackspeed();
+    public int getAttackdelay(int no)
+    {
+        int first_frame = afterImage.getFirstFrame();
+        int delay = look.get_attackdelay(no, first_frame);
+        float fspeed = getRealAttackspeed();
 
         return (int)(delay / fspeed);
-	}
+    }
     public int update(Physics physics)
-    	{
-    		update(physics, 1.0f);
+    {
+        update(physics, 1.0f);
 
-    		return getLayer();
-    	}
+        return getLayer();
+    }
     public void showAttackEffect(Animation toshow, int z)
-    	{
-    		float attackspeed = getRealAttackspeed();
-    		effects.add(toshow, new DrawArg(facing_right), z, attackspeed);
-    	}
+    {
+        float attackspeed = getRealAttackspeed();
+        effects.add(toshow, new DrawArg(facing_right), z, attackspeed);
+    }
 
-    	void showEffectId(CharEffect.Id toshow)
-    	{
-            effects.add(chareffects.get(toshow));
-    	}
+    void showEffectId(CharEffect.Id toshow)
+    {
+        effects.add(chareffects.get(toshow));
+    }
 
-    	public void showIronBody()
-    	{
-    		ironbody.setTime(500);
-    	}
+    public void showIronBody()
+    {
+        ironbody.setTime(500);
+    }
 
-    	public void showDamage(int damage)
-    	{
-    		int start_y = phobj.get_y() - 60;
-    		int x = phobj.get_x() - 10;
+    public void showDamage(int damage)
+    {
+        int start_y = phobj.get_y() - 60;
+        int x = phobj.get_x() - 10;
 
-            damages.add(new DamageNumber(DamageNumber.Type.TOPLAYER, damage, start_y, x));
+        damages.add(new DamageNumber(DamageNumber.Type.TOPLAYER, damage, start_y, x));
 
-    		look.set_alerted(5000);
-    		invincible.setTime(2000);
-    	}
+        look.set_alerted(5000);
+        invincible.setTime(2000);
+    }
 
-    	public void speak(String line)
-    	{
-    		chatBalloon.changeText(line);
-    	}
+    public void speak(String line)
+    {
+        chatBalloon.changeText(line);
+    }
 
-    	public void changeLook(MapleStat.Id stat, int id)
-    	{
-    		switch (stat)
-    		{
-    		case SKIN:
-    			look.set_body(id);
-    			break;
-    		case FACE:
-    			look.set_face(id);
-    			break;
-    		case HAIR:
-    			look.set_hair(id);
-    			break;
-    		}
-    	}
+    public void changeLook(MapleStat.Id stat, int id)
+    {
+        switch (stat)
+        {
+            case SKIN:
+                look.set_body(id);
+                break;
+                case FACE:
+                    look.set_face(id);
+                    break;
+                    case HAIR:
+                        look.set_hair(id);
+                        break;
+        }
+    }
 
 
-    	public void setExpression(int expid)
-    	{
-    		Face.Id expression = Face.Id.byAction(expid);
-    		look.set_expression(expression);
-    	}
+    public void setExpression(int expid)
+    {
+        Face.Id expression = Face.Id.byAction(expid);
+        look.set_expression(expression);
+    }
 
-    	public void attack(String action)
-    	{
-    		look.set_action(action);
+    public void attack(String action)
+    {
+        look.set_action(action);
 
-    		attacking = true;
-    		look.set_alerted(5000);
-    	}
+        attacking = true;
+        look.set_alerted(5000);
+    }
 
-    	public void attack(Stance.Id stance)
-    	{
-    		look.attack(stance);
+    public void attack(Stance.Id stance)
+    {
+        look.attack(stance);
 
-    		attacking = true;
-    		look.set_alerted(5000);
-    	}
+        attacking = true;
+        look.set_alerted(5000);
+    }
 
-    	void Char::attack(bool degenerate)
-    	{
-    		look.attack(degenerate);
+    public void attack(boolean degenerate)
+    {
+        look.attack(degenerate);
 
-    		attacking = true;
-    		look.set_alerted(5000);
-    	}
+        attacking = true;
+        look.set_alerted(5000);
+    }
 
-    	void Char::set_afterimage(int32_t skill_id)
-    	{
-    		int32_t weapon_id = look.get_equips().get_weapon();
+    void set_afterimage(int skill_id)
+    {
+        int weapon_id = look.getEquips().getWeapon();
 
-    		if (weapon_id <= 0)
-    			return;
+        if (weapon_id <= 0)
+            return;
 
-    		const WeaponData& weapon = WeaponData::get(weapon_id);
+        WeaponData weapon = WeaponData.get(weapon_id);
 
-    		std::string stance_name = Stance::names[look.get_stance()];
-    		int16_t weapon_level = weapon.get_equipdata().get_reqstat(MapleStat::Id::LEVEL);
-    		const std::string& ai_name = weapon.get_afterimage();
+        String stance_name = Stance.Id.values()[look.getStrance().ordinal()].name();
+        int weapon_level = weapon.get_equipdata().get_reqstat(MapleStat.Id.LEVEL);
+        String ai_name = weapon.get_afterimage();
 
-    		afterimage = Afterimage(skill_id, ai_name, stance_name, weapon_level);
-    	}
+        afterImage = new AfterImage(skill_id, ai_name, stance_name, weapon_level);
+    }
 
-    	const Afterimage& Char::get_afterimage() const
-    	{
-    		return afterimage;
-    	}
+    public AfterImage get_afterimage()
+    {
+        return afterImage;
+    }
 
-    	void Char::set_direction(bool f)
-    	{
-    		facing_right = f;
-    		look.set_direction(f);
-    	}
+    public void set_direction(boolean f)
+    {
+        facing_right = f;
+        look.setDirection(f);
+    }
 
-    	void Char::set_state(State st)
-    	{
-    		state = st;
+    public void set_state(State st)
+    {
+        state = st;
 
-    		Stance::Id stance = Stance::by_state(state);
-    		look.set_stance(stance);
-    	}
+        Stance.Id stance = Stance.byState(state.ordinal());
+        look.set_stance(stance);
+    }
 
-    	void Char::add_pet(uint8_t index, int32_t iid, const std::string& name, int32_t uniqueid, Point<int16_t> pos, uint8_t stance, int32_t fhid)
-    	{
-    		if (index > 2)
-    			return;
+    public void add_pet(int index, int iid, String name, int uniqueid, int[] pos, int stance, int fhid)
+    {
+        if (index > 2)
+            return;
 
-    		pets[index] = PetLook(iid, name, uniqueid, pos, stance, fhid);
-    	}
+        pets[index] = new PetLook(iid, name, uniqueid, pos, PetLook.Stance.values()[stance], fhid);
+    }
 
-    	void Char::remove_pet(uint8_t index, bool hunger)
-    	{
-    		if (index > 2)
-    			return;
+    public void remove_pet(int index, boolean hunger)
+    {
+        if (index > 2)
+            return;
 
-    		pets[index] = PetLook();
+        pets[index] = new PetLook();
 
-    		if (hunger)
-    		{
-    			// TODO: Empty
-    		}
-    	}
+        if (hunger)
+        {
+            // TODO: Empty
+        }
+    }
 
-    	bool Char::is_invincible() const
-    	{
-    		return invincible == true;
-    	}
+    public boolean is_invincible()
+    {
+        return invincible.get();
+    }
 
-    	bool Char::is_sitting() const
-    	{
-    		return state == State::SIT;
-    	}
+    public boolean is_sitting()
+    {
+        return state == State.SIT;
+    }
 
-    	bool Char::is_climbing() const
-    	{
-    		return state == State::LADDER || state == State::ROPE;
-    	}
+    public boolean is_climbing()
+    {
+        return state == State.LADDER || state == State.ROPE;
+    }
 
-    	bool Char::is_twohanded() const
-    	{
-    		return look.get_equips().is_twohanded();
-    	}
+    public boolean is_twohanded()
+    {
+        return look.getEquips().isTwohanded();
+    }
 
-    	Weapon::Type Char::get_weapontype() const
-    	{
-    		int32_t weapon_id = look.get_equips().get_weapon();
+    public Weapon.Type get_weapontype()
+    {
+        int weapon_id = look.getEquips().getWeapon();
 
-    		if (weapon_id <= 0)
-    			return Weapon::Type::NONE;
+        if (weapon_id <= 0)
+            return Weapon.Type.NONE;
 
-    		return WeaponData::get(weapon_id).get_type();
-    	}
+        return WeaponData.get(weapon_id).get_type();
+    }
 
-    	bool Char::getflip() const
-    	{
-    		return facing_right;
-    	}
+    public boolean getflip()
+    {
+        return facing_right;
+    }
 
-    	std::string Char::get_name() const
-    	{
-    		return namelabel.get_text();
-    	}
+    public String get_name()
+    {
+        return namelabel.storedText;
+    }
 
-    	CharLook& Char::get_look()
-    	{
-    		return look;
-    	}
+    public CharLook get_look()
+    {
+        return look;
+    }
 
-    	const CharLook& Char::get_look() const
-    	{
-    		return look;
-    	}
-
-    	PhysicsObject& Char::get_phobj()
-    	{
-    		return phobj;
-    	}
-
-    	void Char::init()
-    	{
-    		CharLook::init();
-
-    		nl::node src = nl::nx::Effect["BasicEff.img"];
-
-    		for (auto iter : CharEffect::PATHS)
-    			chareffects.emplace(iter.first, src.resolve(iter.second));
-    	}
-
-    	EnumMap<CharEffect::Id, Animation> Char::chareffects;
+    public PhysicsObject get_phobj()
+    {
+        return phobj;
+    }
 }

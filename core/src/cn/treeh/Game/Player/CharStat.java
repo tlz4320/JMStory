@@ -291,32 +291,32 @@ public class CharStat {
 		return attackRect;
 	}
 
-	void set_mapid(int id)
+	public void set_mapid(int id)
 	{
 		mapid = id;
 	}
 
-	int get_mapid()
+	public int get_mapid()
 	{
 		return mapid;
 	}
 
-	int get_portal()
+	public int get_portal()
 	{
 		return portal;
 	}
 
-	long get_exp()
+	public long get_exp()
 	{
 		return exp;
 	}
 
-	String get_name()
+	public String get_name()
 	{
 		return name;
 	}
 
-	String get_jobname()
+	public String get_jobname()
 	{
 		return job.getName();
 	}
@@ -326,37 +326,37 @@ public class CharStat {
 		return weapontype;
 	}
 
-	float get_mastery()
+	public float get_mastery()
 	{
 		return mastery;
 	}
 
-	float get_critical()
+	public float get_critical()
 	{
 		return critical;
 	}
 
-	float get_mincrit()
+	public float get_mincrit()
 	{
 		return mincrit;
 	}
 
-	float get_maxcrit()
+	public float get_maxcrit()
 	{
 		return maxcrit;
 	}
 
-	float get_reducedamage()
+	public float get_reducedamage()
 	{
 		return reducedamage;
 	}
 
-	float get_bossdmg()
+	public float get_bossdmg()
 	{
 		return bossdmg;
 	}
 
-	float get_ignoredef()
+	public float get_ignoredef()
 	{
 		return ignoredef;
 	}
@@ -366,27 +366,27 @@ public class CharStat {
 		stance = s;
 	}
 
-	float get_stance()
+	public float get_stance()
 	{
 		return stance;
 	}
 
-	float get_resistance()
+	public float get_resistance()
 	{
 		return resiststatus;
 	}
 
-	int get_maxdamage()
+	public int get_maxdamage()
 	{
 		return maxdamage;
 	}
 
-	int get_mindamage()
+	public int get_mindamage()
 	{
 		return mindamage;
 	}
 
-	int get_honor()
+	public int get_honor()
 	{
 		return honor;
 	}
@@ -396,17 +396,17 @@ public class CharStat {
 		attackspeed = as;
 	}
 
-	int get_attackspeed()
+	public int get_attackspeed()
 	{
 		return attackspeed;
 	}
 
-	Job get_job()
+	public Job get_job()
 	{
 		return job;
 	}
 
-	boolean get_female()
+	public  boolean get_female()
 	{
 		return female;
 	}

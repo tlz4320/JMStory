@@ -2,6 +2,13 @@ package cn.treeh.Util;
 
 public class BoolPair<T> {
     T trueObj, falseObj;
+    public BoolPair(){
+
+    }
+    public BoolPair(T to, T fo){
+        trueObj = to;
+        falseObj = fo;
+    }
     public void setTrue(T t){
         trueObj = t;
     }

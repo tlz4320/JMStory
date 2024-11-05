@@ -20,7 +20,7 @@ public class GamePlay {
     }
 
     ;
-    Stage stage;
+    static public Stage stage;
     SpriteBatch batch;
     static GamePlay instance;
     Camera camera;

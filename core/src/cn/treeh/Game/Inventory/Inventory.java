@@ -74,7 +74,7 @@ public class Inventory {
 		}
 		slotmaxima.put(InventoryType.Id.EQUIPPED, EquipSlot.Id.LENGTH.ordinal());
 	}
-	void recalc_stats(Weapon.Type type)
+	public void recalc_stats(Weapon.Type type)
 	{
 		totalstats.clear();
 
@@ -267,7 +267,7 @@ public class Inventory {
 		return slotmaxima.get(type);
 	}
 
-	int get_stat(EquipStat.Id type)
+	public int get_stat(EquipStat.Id type)
 	{
 		return totalstats.get(type);
 	}
@@ -277,7 +277,7 @@ public class Inventory {
 		return meso;
 	}
 
-	boolean has_projectile()
+	public boolean has_projectile()
 	{
 		return bulletslot > 0;
 	}
@@ -292,12 +292,12 @@ public class Inventory {
 		return bulletslot;
 	}
 
-	int get_bulletcount()
+	public int get_bulletcount()
 	{
 		return get_item_count(InventoryType.Id.USE, bulletslot);
 	}
 
-	int get_bulletid()
+	public int get_bulletid()
 	{
 		return get_item_id(InventoryType.Id.USE, bulletslot);
 	}
@@ -345,7 +345,7 @@ public class Inventory {
 		return counter <= slotmaxima.get(type) ? counter : 0;
 	}
 
-	int find_item(InventoryType.Id type, int itemid)
+	public int find_item(InventoryType.Id type, int itemid)
 	{
 		for (Map.Entry<Integer, Slot> iter : inventories.get(type).entrySet())
 			if (iter.getValue().item_id == itemid)
@@ -374,7 +374,7 @@ public class Inventory {
 		return total_count;
 	}
 
-	int get_item_id(InventoryType.Id type, int slot)
+	public int get_item_id(InventoryType.Id type, int slot)
 	{
 		Slot iter = inventories.get(type).get(slot);
 		return iter == null ? 0 : iter.item_id;

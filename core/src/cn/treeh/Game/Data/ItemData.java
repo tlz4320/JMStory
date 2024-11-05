@@ -139,62 +139,62 @@ public class ItemData {
 
 
 	}
-	boolean is_valid()
+	public boolean is_valid()
 	{
 		return valid;
 	}
 
-	boolean is_untradable()
+	public boolean is_untradable()
 	{
 		return untradable;
 	}
 
-	boolean is_unique()
+	public boolean is_unique()
 	{
 		return unique;
 	}
 
-	boolean is_unsellable()
+	public boolean is_unsellable()
 	{
 		return unsellable;
 	}
 
-	boolean is_cashitem()
+	public boolean is_cashitem()
 	{
 		return cashitem;
 	}
 
-	int get_id()
+	public int get_id()
 	{
 		return itemid;
 	}
 
-	int get_price()
+	public int get_price()
 	{
 		return price;
 	}
 
-	int get_gender()
+	public int get_gender()
 	{
 		return gender;
 	}
 
-	 String get_name()
+	public String get_name()
 	{
 		return name;
 	}
 
-	 String get_desc()
+	public String get_desc()
 	{
 		return desc;
 	}
 
-	 String get_category()
+	 public String get_category()
 	{
 		return category;
 	}
 
-	 Texture get_icon(boolean raw)
+	public Texture get_icon(boolean raw)
 	{
 		return icons.get(raw);
 	}

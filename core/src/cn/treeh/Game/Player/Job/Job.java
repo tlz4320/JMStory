@@ -237,7 +237,7 @@ public class Job {
 		return false;
 	}
 
-	boolean can_use(int skill_id)
+	public boolean can_use(int skill_id)
 	{
 		int required = (skill_id / 10000);
 		return is_sub_job(required);

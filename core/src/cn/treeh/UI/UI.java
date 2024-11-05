@@ -136,4 +136,7 @@ public class UI {
     public void remove(UIElement.Type type){
         display.remove(type);
     }
+    public UIState getState(){
+        return(display);
+    }
 }

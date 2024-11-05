@@ -27,7 +27,10 @@ public class CharEquips {
         if (clothes.containsKey(slot))
             clothes.get(slot).draw(stance, layer, frame, args, batch);
     }
-
+    public void remove_equip(EquipSlot.Id slot)
+	{
+        clothes.remove(slot);
+	}
     public void addEquip(int itemId, BodyDrawInfo info) {
         if (itemId <= 0)
             return;
@@ -94,8 +97,13 @@ public class CharEquips {
             return false;
     }
 
-	int getWeapon()
+	public int getWeapon()
 	{
 		return getEquip(EquipSlot.Id.WEAPON);
+	}
+
+    public boolean hasWeapon()
+	{
+		return getWeapon() != 0;
 	}
 }

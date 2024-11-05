@@ -73,7 +73,7 @@ public class OtherChar extends Char {
 		return getLayer();
 	}
 
-	void send_movement(LinkedList<Movement> newmoves)
+	public void send_movement(LinkedList<Movement> newmoves)
 	{
 		movements.push(newmoves.peekLast());
 
@@ -83,17 +83,17 @@ public class OtherChar extends Char {
 		}
 	}
 
-	void update_skill(int skillid, int skilllevel)
+	public void update_skill(int skillid, int skilllevel)
 	{
 		skilllevels.put(skillid, skilllevel);
 	}
 
-	void update_speed(int as)
+	public void update_speed(int as)
 	{
 		attackspeed = as;
 	}
 
-	void update_look( LookEntry newlook)
+	public void update_look( LookEntry newlook)
 	{
 		look = new CharLook(newlook);
 
@@ -101,17 +101,17 @@ public class OtherChar extends Char {
 		setState(laststate);
 	}
 
-	int get_integer_attackspeed()
+	public int get_integer_attackspeed()
 	{
 		return attackspeed;
 	}
 
-	int get_level()
+	public int get_level()
 	{
 		return level;
 	}
 
-	int get_skilllevel(int skillid)
+	public int get_skilllevel(int skillid)
 	{
 		return skilllevels.getOrDefault(skillid, 0);
 	}

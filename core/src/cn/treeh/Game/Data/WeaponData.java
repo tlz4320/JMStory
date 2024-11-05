@@ -66,7 +66,7 @@ public class WeaponData {
 		return equipdata.is_valid();
 	}
 
-	int get_speed()
+	public int get_speed()
 	{
 		return attackspeed;
 	}
@@ -111,7 +111,7 @@ public class WeaponData {
 			return 50 - 25 / attackspeed;
 	}
 
-	Weapon.Type get_type()
+	public Weapon.Type get_type()
 	{
 		return type;
 	}
@@ -121,12 +121,12 @@ public class WeaponData {
 		return degenerate ? sound_true : sound_false;
 	}
 
-	String get_afterimage()
+	public String get_afterimage()
 	{
 		return afterimage;
 	}
 
-	 EquipData get_equipdata()
+	 public EquipData get_equipdata()
 	{
 		return equipdata;
 	}
