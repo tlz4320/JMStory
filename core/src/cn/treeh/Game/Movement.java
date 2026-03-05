@@ -43,7 +43,7 @@ public class Movement {
     public int ypos;
     int lastx;
     int lasty;
-    int fh;
+    public int fh;
     public int newstate;
     int duration;
 }

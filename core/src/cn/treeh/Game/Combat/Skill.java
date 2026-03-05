@@ -1,5 +1,17 @@
 package cn.treeh.Game.Combat;
 
+import cn.treeh.Game.Data.SkillData;
+import cn.treeh.Game.Inventory.Weapon;
+import cn.treeh.Game.MapleMap.Mob;
+import cn.treeh.Game.Player.Char;
+import cn.treeh.Game.Player.Job.Job;
+import cn.treeh.Game.Player.Job.SkillId;
+import cn.treeh.Graphics.Animation;
+import cn.treeh.NX.Bitmap;
+import cn.treeh.NX.NXFiles;
+import cn.treeh.NX.Node;
+import cn.treeh.Util.StringUtil;
+
 public class Skill {
     SkillAction action;
 		SkillBullet bullet;
@@ -10,174 +22,175 @@ public class Skill {
 		int skillid;
 		boolean overregular;
 		boolean projectile;
-        Skill::Skill(int32_t id) : skillid(id)
+        public Skill(int id)
 	{
-		const SkillData& data = SkillData::get(skillid);
+		skillid = id;
+		 SkillData data = SkillData.getSkillData(skillid);
 
-		std::string strid;
+		String strid = "" + skillid;
 
 		if (skillid < 10000000)
-			strid = string_format::extend_id(skillid, 7);
-		else
-			strid = std::to_string(skillid);
-
-		nl::node src = nl::nx::Skill[strid.substr(0, 3) + ".img"]["skill"][strid];
+			strid = StringUtil.extend(skillid, 7);
+		Node src = NXFiles.Skill().subNode(strid.substring(0, 3) + ".img").subNode("skill").subNode(strid);
 
 		projectile = true;
 		overregular = false;
 
-		sound = std::make_unique<SingleSkillSound>(strid);
+		sound = new SingleSkillSound(strid);
 
-		bool byleveleffect = src["CharLevel"]["10"]["effect"].size() > 0;
-		bool multieffect = src["effect0"].size() > 0;
+		boolean byleveleffect = src.subNode("CharLevel").
+		subNode("10").subNode("effect").nChild() > 0;
+		boolean multieffect = src.subNode("effect0").nChild() > 0;
 
 		if (byleveleffect)
 		{
-			useeffect = std::make_unique<ByLevelUseEffect>(src);
+			useeffect = new ByLevelUseEffect(src);
 		}
 		else if (multieffect)
 		{
-			useeffect = std::make_unique<MultiUseEffect>(src);
+			useeffect = new MultiUseEffect(src);
 		}
 		else
 		{
-			bool isanimation = src["effect"]["0"].data_type() == nl::node::type::bitmap;
-			bool haseffect1 = src["effect"]["1"].size() > 0;
+			boolean isanimation = src.subNode("effect").subNode("0").getType() == Node.Type.bitmap;
+			boolean haseffect1 = src.subNode("effect").subNode("1").nChild() > 0;
 
 			if (isanimation)
 			{
-				useeffect = std::make_unique<SingleUseEffect>(src);
+				useeffect = new SingleUseEffect(src);
 			}
 			else if (haseffect1)
 			{
-				useeffect = std::make_unique<TwoHandedUseEffect>(src);
+				useeffect = new TwoHandedUseEffect(src);
 			}
 			else
 			{
-				switch (skillid)
+				SkillId.Id tmpid = SkillId.idmap.getOrDefault(skillid, SkillId.Id.NONE_ID);
+				switch (tmpid)
 				{
-				case SkillId::IRON_BODY:
-				case SkillId::MAGIC_ARMOR:
-					useeffect = std::make_unique<IronBodyUseEffect>();
+
+				case IRON_BODY:
+				case MAGIC_ARMOR:
+					useeffect = new IronBodyUseEffect();
 					break;
 				default:
-					useeffect = std::make_unique<NoUseEffect>();
+					useeffect = new NoUseEffect();
 					break;
 				}
 			}
 		}
 
-		bool bylevelhit = src["CharLevel"]["10"]["hit"].size() > 0;
-		bool byskilllevelhit = src["level"]["1"]["hit"].size() > 0;
-		bool hashit0 = src["hit"]["0"].size() > 0;
-		bool hashit1 = src["hit"]["1"].size() > 0;
+		boolean bylevelhit = src.subNode("CharLevel").subNode("10").subNode("hit").nChild() > 0;
+		boolean byskilllevelhit = src.subNode("level").subNode("1").subNode("hit").nChild() > 0;
+		boolean hashit0 = src.subNode("hit").subNode("0").nChild() > 0;
+		boolean hashit1 = src.subNode("hit").subNode("1").nChild() > 0;
 
 		if (bylevelhit)
 		{
 			if (hashit0 && hashit1)
-				hiteffect = std::make_unique<ByLevelTwoHHitEffect>(src);
+				hiteffect = new ByLevelTwoHHitEffect(src);
 			else
-				hiteffect = std::make_unique<ByLevelHitEffect>(src);
+				hiteffect = new ByLevelHitEffect(src);
 		}
 		else if (byskilllevelhit)
 		{
-			hiteffect = std::make_unique<BySkillLevelHitEffect>(src);
+			hiteffect = new BySkillLevelHitEffect(src);
 		}
 		else if (hashit0 && hashit1)
 		{
-			hiteffect = std::make_unique<TwoHandedHitEffect>(src);
+			hiteffect = new TwoHandedHitEffect(src);
 		}
 		else if (hashit0)
 		{
-			hiteffect = std::make_unique<SingleHitEffect>(src);
+			hiteffect = new SingleHitEffect(src);
 		}
 		else
 		{
-			hiteffect = std::make_unique<NoHitEffect>();
+			hiteffect = new NoHitEffect();
 		}
 
-		bool hasaction0 = src["action"]["0"].data_type() == nl::node::type::string;
-		bool hasaction1 = src["action"]["1"].data_type() == nl::node::type::string;
+		boolean hasaction0 = src.subNode("action").subNode("0").getType() == Node.Type.string;
+		boolean hasaction1 = src.subNode("action").subNode("1").getType() == Node.Type.string;
 
 		if (hasaction0 && hasaction1)
 		{
-			action = std::make_unique<TwoHandedAction>(src);
+			action = new cn.treeh.Game.Combat.TwoHandedAction(src);
 		}
 		else if (hasaction0)
 		{
-			action = std::make_unique<SingleAction>(src);
+			action = new SingleAction(src);
 		}
 		else if (data.is_attack())
 		{
-			bool bylevel = src["level"]["1"]["action"].data_type() == nl::node::type::string;
+			boolean bylevel = src.subNode("level").subNode("1").subNode("action").getType() == Node.Type.string;
 
 			if (bylevel)
 			{
-				action = std::make_unique<ByLevelAction>(src, skillid);
+				action = new ByLevelAction(src, skillid);
 			}
 			else
 			{
-				action = std::make_unique<RegularAction>();
+				action = new RegularAction();
 				overregular = true;
 			}
 		}
 		else
 		{
-			action = std::make_unique<NoAction>();
+			action = new NoAction();
 		}
 
-		bool hasball = src["ball"].size() > 0;
-		bool bylevelball = src["level"]["1"]["ball"].size() > 0;
+		boolean hasball = src.subNode("ball").nChild() > 0;
+		boolean bylevelball = src.subNode("level").subNode("1").subNode("ball").nChild() > 0;
 
 		if (bylevelball)
 		{
-			bullet = std::make_unique<BySkillLevelBullet>(src, skillid);
+			bullet = new BySkillLevelBullet(src, skillid);
 		}
 		else if (hasball)
 		{
-			bullet = std::make_unique<SingleBullet>(src);
+			bullet = new SingleBullet(src);
 		}
 		else
 		{
-			bullet = std::make_unique<RegularBullet>();
+			bullet = new RegularBullet();
 			projectile = false;
 		}
 	}
 
-	void Skill::apply_useeffects(Char& user) const
+	public void apply_useeffects(Char user)
 	{
-		useeffect->apply(user);
+		useeffect.apply(user);
 
-		sound->play_use();
+		sound.play_use();
 	}
 
-	void Skill::apply_actions(Char& user, Attack::Type type) const
+	public void apply_actions(Char user, Attack. Type type)
 	{
-		action->apply(user, type);
+		action.apply(user, type);
 	}
 
-	void Skill::apply_stats(const Char& user, Attack& attack) const
+	public void apply_stats( Char user, Attack attack)
 	{
 		attack.skill = skillid;
 
-		int32_t level = user.get_skilllevel(skillid);
-		const SkillData::Stats stats = SkillData::get(skillid).get_stats(level);
+		int level = user.get_skilllevel(skillid);
+		 SkillData. Stats stats = SkillData.getSkillData(skillid).get_stats(level);
 
-		if (stats.fixdamage)
+		if (stats.fixdamage != 0)
 		{
 			attack.fixdamage = stats.fixdamage;
-			attack.damagetype = Attack::DMG_FIXED;
+			attack.damagetype = Attack.DamageType.DMG_FIXED;
 		}
-		else if (stats.matk)
+		else if (stats.matk != 0)
 		{
 			attack.matk += stats.matk;
-			attack.damagetype = Attack::DMG_MAGIC;
+			attack.damagetype = Attack.DamageType.DMG_MAGIC;
 		}
 		else
 		{
 			attack.mindamage *= stats.damage;
 			attack.maxdamage *= stats.damage;
-			attack.damagetype = Attack::DMG_WEAPON;
+			attack.damagetype = Attack.DamageType.DMG_WEAPON;
 		}
 
 		attack.critical += stats.critical;
@@ -187,7 +200,7 @@ public class Skill {
 
 		switch (attack.type)
 		{
-		case Attack::RANGED:
+		case RANGED:
 			attack.hitcount = stats.bulletcount;
 			break;
 		default:
@@ -198,11 +211,12 @@ public class Skill {
 		if (!stats.range.empty())
 			attack.range = stats.range;
 
-		if (projectile && !attack.bullet)
+		if (projectile && !(attack.bullet == 0))
 		{
-			switch (skillid)
+			SkillId.Id tmpid = SkillId.idmap.getOrDefault(skillid, SkillId.Id.NONE_ID);
+			switch (tmpid)
 			{
-			case SkillId::THREE_SNAILS:
+				case THREE_SNAILS:
 				switch (level)
 				{
 				case 1:
@@ -224,70 +238,72 @@ public class Skill {
 
 		if (overregular)
 		{
-			attack.stance = user.get_look().get_stance();
+			attack.stance = user.get_look().getStrance().ordinal();
 
-			if (attack.type == Attack::CLOSE && !projectile)
-				attack.range = user.get_afterimage().get_range();
+			if (attack.type == Attack.Type.CLOSE && !projectile)
+				attack.range = user.get_afterimage().getRange();
 		}
 	}
 
-	void Skill::apply_hiteffects(const AttackUser& user, Mob& target) const
+	public void apply_hiteffects( AttackUser user, Mob target)
 	{
-		hiteffect->apply(user, target);
+		hiteffect.apply(user, target);
 
-		sound->play_hit();
+		sound.play_hit();
 	}
 
-	Animation Skill::get_bullet(const Char& user, int32_t bulletid) const
+	public Animation get_bullet(Char user, int bulletid)
 	{
-		return bullet->get(user, bulletid);
+		return bullet.get(user, bulletid);
 	}
 
-	bool Skill::is_attack() const
+	public boolean is_attack()
 	{
-		return SkillData::get(skillid).is_attack();
+		return SkillData.getSkillData(skillid).is_attack();
 	}
 
-	bool Skill::is_skill() const
+	public boolean is_skill()
 	{
 		return true;
 	}
 
-	int32_t Skill::get_id() const
+	public int get_id()
 	{
 		return skillid;
 	}
 
-	SpecialMove::ForbidReason Skill::can_use(int32_t level, Weapon::Type weapon, const Job& job, uint16_t hp, uint16_t mp, uint16_t bullets) const
+	public SpecialMove.ForbidReason can_use(int level, Weapon.Type weapon, Job job, int hp, int mp, int bullets)
 	{
-		if (level <= 0 || level > SkillData::get(skillid).get_masterlevel())
-			return FBR_OTHER;
+		SkillData data = SkillData.getSkillData(skillid);
+		if (level <= 0 || level > data.get_masterlevel())
+			return SpecialMove.ForbidReason.FBR_OTHER;
 
-		if (job.can_use(skillid) == false)
-			return FBR_OTHER;
+		if (!job.can_use(skillid))
+			return SpecialMove.ForbidReason.FBR_OTHER;
 
-		const SkillData::Stats stats = SkillData::get(skillid).get_stats(level);
+		 SkillData.Stats stats = data.get_stats(level);
 
 		if (hp <= stats.hpcost)
-			return FBR_HPCOST;
+			return SpecialMove.ForbidReason.FBR_HPCOST;
 
 		if (mp < stats.mpcost)
-			return FBR_MPCOST;
+			return SpecialMove.ForbidReason.FBR_MPCOST;
 
-		Weapon::Type reqweapon = SkillData::get(skillid).get_required_weapon();
+		Weapon. Type reqweapon = data.get_required_weapon();
 
-		if (weapon != reqweapon && reqweapon != Weapon::NONE)
-			return FBR_WEAPONTYPE;
+		if (weapon != reqweapon && reqweapon != Weapon.Type.NONE)
+			return SpecialMove.ForbidReason.FBR_WEAPONTYPE;
 
 		switch (weapon)
 		{
-		case Weapon::BOW:
-		case Weapon::CROSSBOW:
-		case Weapon::CLAW:
-		case Weapon::GUN:
-			return (bullets >= stats.bulletcost) ? FBR_NONE : FBR_BULLETCOST;
+		case BOW:
+		case CROSSBOW:
+		case CLAW:
+		case GUN:
+			return (bullets >= stats.bulletcost) ? SpecialMove.ForbidReason.FBR_NONE :
+			SpecialMove.ForbidReason.FBR_BULLETCOST;
 		default:
-			return FBR_NONE;
+			return SpecialMove.ForbidReason.FBR_NONE;
 		}
 	}
 

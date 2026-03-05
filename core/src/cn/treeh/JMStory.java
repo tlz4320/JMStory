@@ -23,8 +23,8 @@ public class JMStory extends ApplicationAdapter {
 
 //    private Viewport viewport;
     ShapeRenderer sr;
-    SpriteBatch batch;
-    Stage stage;
+    public static SpriteBatch batch;
+    public static Stage stage;
     UI ui;
     GamePlay game;
     TextureRegion texture;

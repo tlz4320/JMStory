@@ -1,5 +1,6 @@
 package cn.treeh.Game.Combat;
 
+import cn.treeh.Game.MapleMap.Mob;
 import cn.treeh.Graphics.Animation;
 import cn.treeh.NX.Node;
 

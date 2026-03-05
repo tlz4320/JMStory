@@ -146,7 +146,7 @@ public class GamePlay {
         if(key == 3)
             tmppos[1] += 10;
         camera.setPos(tmppos);
-        player.update(map.getPhysics());
+//        player.update(map.getPhysics());
 //        combat.update();
 //        backgrounds.update();
 //        effect.update();

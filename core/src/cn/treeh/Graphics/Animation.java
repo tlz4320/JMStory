@@ -14,7 +14,7 @@ import java.util.TreeSet;
 public class Animation {
     public static class Frame {
         public Texture texture;
-        Rectangle bounds;
+        public Rectangle bounds;
         int[] head;
 
         int delay;
@@ -186,7 +186,7 @@ public class Animation {
             return false;
         }
     }
-    int getDelay(int frame_id)
+    public int getDelay(int frame_id)
     {
         return frame_id < frames.size() ? frames.get(frame_id).delay : 0;
     }
@@ -201,4 +201,8 @@ public class Animation {
     {
         return getFrame().getOrigin();
     }
+    public int[] getHead(){
+        return getFrame().head;
+    }
+
 }

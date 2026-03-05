@@ -38,6 +38,7 @@ public class Export_obj {
         if (delay == 0)
             delay = 100;
         Bitmap bitmap = node.getBitmap();
+        int[] origin = node.subNode("origin").getVector();
         if(bitmap.width + now_width > width){
             now_width = 0;
             now_height += 5 + maxHeight;
@@ -58,7 +59,7 @@ public class Export_obj {
         }
         packer.setRGB(now_width, now_height, bitmap.width, bitmap.height, cvC(bitmap.data(), bitmap.length()), 0, bitmap.width);
         regions.add(new AbstractMap.SimpleEntry<>(key + "_" + index,
-                new int[]{now_width, now_height, bitmap.width, bitmap.height, delay, id}));
+                new int[]{now_width, now_height, bitmap.width, bitmap.height, delay, id, origin[0], origin[1]}));
         now_width += 5 + bitmap.width;
         maxWidth = Math.min(Math.max(maxWidth, now_width), width);
     }
@@ -117,7 +118,7 @@ public class Export_obj {
                     path = path.substring(path.indexOf('/'));
                     int zig = node.subNode(path).subNode("zigzag").getInt();
                     writer.write(name.substring(0, index) + "\t" + name.substring(index + 1) + "\t" +
-                            tmp[0] + "\t" + tmp[1] + "\t" + tmp[2] + "\t" + tmp[3] +"\t" +  tmp[4] + "\t" + tmp[5] + "\t" + zig + "\n");
+                            tmp[0] + "\t" + tmp[1] + "\t" + tmp[2] + "\t" + tmp[3] +"\t" +  tmp[4] + "\t" + tmp[5] + "\t" + zig +"\t" + tmp[6] + "\t" + tmp[7] + "\n");
                 }
                 writer.flush();
         }catch (Exception e){

@@ -18,8 +18,8 @@ public class OtherChar extends Char {
 		TreeMap<Integer, Integer> skilllevels;
 		int attackspeed;
 
-        OtherChar(int charid, CharLook look, int level, int job,
-                  String name, int stance, int[] position)
+        public OtherChar(int charid, CharLook look, int level, int job,
+                         String name, int stance, int[] position)
 	{
 		super(charid, look, name);
 		this.level = level;

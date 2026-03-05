@@ -21,7 +21,7 @@ public class Cursor {
         }
         return instance;
     }
-    enum State
+    public enum State
     {
         IDLE(0),
         CANCLICK(1),

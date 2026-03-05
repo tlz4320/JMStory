@@ -20,7 +20,7 @@ public class AttackResult {
 
 		Attack.Type type;
 		int attacker = 0;
-		int mobcount = 0;
+		public int mobcount = 0;
 		int hitcount = 1;
 		int skill = 0;
 		int charge = 0;
@@ -30,7 +30,7 @@ public class AttackResult {
 		int stance = 0;
 		int speed = 0;
 		boolean toleft = false;
-		TreeMap<Integer, LinkedList<Map.Entry<Integer, Boolean>>> damagelines = new TreeMap<>();
-		int first_oid;
-		int last_oid;
+		public TreeMap<Integer, LinkedList<Map.Entry<Integer, Boolean>>> damagelines = new TreeMap<>();
+		public int first_oid;
+		public int last_oid;
 }

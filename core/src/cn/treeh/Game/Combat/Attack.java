@@ -18,7 +18,7 @@ public class Attack {
 			};
 
 	public Type type = Type.CLOSE;
-	DamageType damagetype = DamageType.DMG_WEAPON;
+	public DamageType damagetype = DamageType.DMG_WEAPON;
 
 	public double mindamage = 1.0;
 	public double maxdamage = 1.0;
@@ -26,10 +26,10 @@ public class Attack {
 	public float ignoredef = 0.0f;
 	int matk = 0;
 	public int accuracy = 0;
-	int fixdamage = 0;
+	public int fixdamage = 0;
 	public int playerlevel = 1;
 
-	int hitcount = 0;
+	public int hitcount = 0;
 	int mobcount = 0;
 	public int speed = 0;
 	int stance = 0;

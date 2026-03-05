@@ -13,7 +13,7 @@ public class MapReactors {
     public void draw(int layer, double[] pos, float alpha, SpriteBatch batch){
         if(layers[layer] != null){
             for (Map.Entry<Integer, Reactor> entry : layers[layer].entrySet()){
-                entry.getValue().draw(pos, alpha, batch);
+//                entry.getValue().draw(pos, alpha, batch);
 //                if (mmo && mmo->is_active())
 //                    mmo->draw(viewx, viewy, alpha);
             }

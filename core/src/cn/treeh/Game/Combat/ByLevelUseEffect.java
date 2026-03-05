@@ -29,7 +29,9 @@ public class ByLevelUseEffect extends SkillUseEffect{
             return;
         int level = target.get_level();
         Map.Entry<Integer, Effect> e = effects.floorEntry(level);
-        if(e != null)
-            e.getValue().apply(target);
+        if(e == null){
+            e = effects.firstEntry();
+        }
+        e.getValue().apply(target);
     }
 }

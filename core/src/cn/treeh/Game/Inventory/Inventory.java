@@ -1,5 +1,6 @@
 package cn.treeh.Game.Inventory;
 
+import cn.treeh.Game.Data.BulletData;
 import cn.treeh.Game.Data.EquipData;
 import cn.treeh.Game.Player.Look.EquipSlot;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
@@ -126,9 +127,9 @@ public class Inventory {
 			}
 		}
 		int bulletid = get_bulletid();
-		if (bulletid != 0)
-			totalstats.put(EquipStat.Id.WATK, totalstats.getOrDefault(EquipStat.Id.WATK, 0) +
-											  BulletData.getBulletData(bulletid).get_watk());
+//		if (bulletid != 0)
+//			totalstats.put(EquipStat.Id.WATK, totalstats.getOrDefault(EquipStat.Id.WATK, 0) +
+//											  BulletData.getBulletData(bulletid).get_watk());
 	}
 
 	void set_meso(long m){

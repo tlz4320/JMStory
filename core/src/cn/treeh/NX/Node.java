@@ -324,4 +324,14 @@ public class Node {
     public boolean isRoot(){
         return m_data.pos == f.node_offset;
     }
+    public Node resolve(String path){
+        String[] paths = path.split("/");
+        Node r = this;
+        int index = 0;
+        while(r.valid()){
+            r.subNode(paths[index]);
+            index++;
+        }
+        return r;
+    }
 }

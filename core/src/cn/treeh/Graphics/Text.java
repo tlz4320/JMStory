@@ -5,13 +5,18 @@ import cn.treeh.NX.Node;
 import cn.treeh.Util.Configure;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.github.tommyettinger.textra.Font;
 import org.apache.commons.lang3.StringUtils;
 
 public class Text {
+
+
     public static Font texraFont;
     public static BitmapFont bitmapFont;
     static {//初始化字体

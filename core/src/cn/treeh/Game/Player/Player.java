@@ -134,7 +134,7 @@ public class Player extends Char{
 
         if (needupdate)
         {
-            MovePlayerPacket(newmove).dispatch();
+//            MovePlayerPacket(newmove).dispatch();
             lastmove = newmove;
         }
 
@@ -238,9 +238,9 @@ public class Player extends Char{
     {
         InventoryType.Id type = InventoryType.by_item_id(itemid);
         int slot = inventory.find_item(type, itemid);
-        if (slot != 0)
-            if (type == InventoryType.Id.USE)
-                UseItemPacket(slot, itemid).dispatch();
+//        if (slot != 0)
+//            if (type == InventoryType.Id.USE)
+//                UseItemPacket(slot, itemid).dispatch();
     }
     public int get_integer_attackspeed()
     {
@@ -272,7 +272,7 @@ public class Player extends Char{
                 pst.initialize(this);
         }
     }
-    boolean is_attacking()
+    public boolean is_attacking()
     {
         return attacking;
     }

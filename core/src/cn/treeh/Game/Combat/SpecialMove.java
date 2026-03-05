@@ -1,12 +1,13 @@
 package cn.treeh.Game.Combat;
 
 import cn.treeh.Game.Inventory.Weapon;
+import cn.treeh.Game.MapleMap.Mob;
 import cn.treeh.Game.Player.Char;
 import cn.treeh.Game.Player.Job.Job;
 
 public abstract class SpecialMove {
 	abstract public ForbidReason can_use(int level, Weapon.Type weapon, Job job, int hp, int mp, int bullets);
-
+	abstract public void apply_hiteffects( AttackUser user, Mob target);
 	public enum ForbidReason
 			{
 				FBR_NONE,

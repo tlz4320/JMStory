@@ -29,19 +29,6 @@ public class NxFile {
             this.name = name.getName();
             fileReader = new RandomDataInput(name);
             //write with NoLifeNX file.cpp
-            /*
-                uint32_t const magic;
-                uint32_t const node_count;
-                uint64_t const node_offset;
-                uint32_t const string_count;
-                uint64_t const string_offset;
-                uint32_t const bitmap_count;
-                uint64_t const bitmap_offset;
-                uint32_t const audio_count;
-                uint64_t const audio_offset;
-
-             */
-
             magic = readInt();
             node_count = readInt();
             node_offset = readLong();

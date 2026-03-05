@@ -1,6 +1,7 @@
 package cn.treeh.Game.Player.PlayerStats;
 
 import cn.treeh.Game.MapleMap.Ladder;
+import cn.treeh.Game.Physics.PhysicsObject;
 import cn.treeh.Game.Player.Char;
 import cn.treeh.Game.Player.Player;
 import cn.treeh.Game.Player.PlayerStat;

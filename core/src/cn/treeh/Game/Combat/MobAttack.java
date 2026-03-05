@@ -13,7 +13,7 @@ public class MobAttack {
 		public MobAttack(){
             valid = false;
         }
-		MobAttack(int watk, int[] origin, int mobid, int oid){
+		public MobAttack(int watk, int[] origin, int mobid, int oid){
             type = Attack.Type.CLOSE;
             watk = watk;
             origin = origin;

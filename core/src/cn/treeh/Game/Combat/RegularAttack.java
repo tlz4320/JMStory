@@ -1,6 +1,7 @@
 package cn.treeh.Game.Combat;
 
 import cn.treeh.Game.Inventory.Weapon;
+import cn.treeh.Game.MapleMap.Mob;
 import cn.treeh.Game.Player.Char;
 import cn.treeh.Game.Player.Job.Job;
 import cn.treeh.Graphics.Animation;

@@ -2,8 +2,9 @@ package cn.treeh.Game.MapleMap;
 
 import cn.treeh.Game.Physics.Physics;
 import cn.treeh.Game.Physics.PhysicsObject;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class MapObject {
+public abstract class MapObject {
     public MapObject(int oid, int[] position){
         this.oid = oid;
         phobj = new PhysicsObject();
@@ -17,7 +18,7 @@ public class MapObject {
     public boolean active;
 
     
-
+    public abstract void draw(double viewx, double viewy, float alpha, SpriteBatch batch);
     public int update( Physics physics)
     {
         physics.move(phobj);

@@ -23,63 +23,63 @@ public class SkillData {
 		return sd;
 	}
 	static public class Stats
-			{
-				float damage;
-				int matk;
-				int fixdamage;
-				int mastery;
-				int attackcount;
-				int mobcount;
-				int bulletcount;
-				int bulletcost;
-				int hpcost;
-				int mpcost;
-				float chance;
-				float critical;
-				float ignoredef;
-				float hrange;
-				Rectangle range;
+					{
+						public float damage;
+						public int matk;
+						public int fixdamage;
+						public 			int mastery;
+						public int attackcount;
+						public int mobcount;
+						public int bulletcount;
+						public int bulletcost;
+						public int hpcost;
+						public int mpcost;
+						public float chance;
+						public float critical;
+						public float ignoredef;
+						public float hrange;
+						public Rectangle range;
 
-				Stats(float damage, int matk, int fixdamage,
-					  int mastery, int attackcount, int mobcount,
-					  int bulletcount, int bulletcost, int hpcost,
-					  int mpcost, float chance, float critical,
-					  float ignoredef, float hrange, Rectangle range){
-					this.damage = damage;
-					this.matk = matk;
-					this.fixdamage = fixdamage;
-					this.mastery = mastery;
-					this.attackcount=attackcount;
-					this.mobcount=mobcount;
-					this.bulletcount=bulletcount;
-					this.bulletcost=bulletcost;
-					this.hpcost=hpcost;
-					this.mpcost=mpcost;
-					this.chance=chance;
-					this.critical=critical;
-					this.ignoredef=ignoredef;
-					this.hrange=hrange;
-					this.range=range;
+						Stats(float damage, int matk, int fixdamage,
+							  int mastery, int attackcount, int mobcount,
+							  int bulletcount, int bulletcost, int hpcost,
+							  int mpcost, float chance, float critical,
+							  float ignoredef, float hrange, Rectangle range){
+							this.damage = damage;
+							this.matk = matk;
+							this.fixdamage = fixdamage;
+							this.mastery = mastery;
+							this.attackcount=attackcount;
+							this.mobcount=mobcount;
+							this.bulletcount=bulletcount;
+							this.bulletcost=bulletcost;
+							this.hpcost=hpcost;
+							this.mpcost=mpcost;
+							this.chance=chance;
+							this.critical=critical;
+							this.ignoredef=ignoredef;
+							this.hrange=hrange;
+							this.range=range;
 
-				}
-			}
+						}
+					}
 
 	// Skill flags, unfortunately these just have to be hard-coded
 	enum Flags
-			{
-				NONE,
-				ATTACK,
-				RANGED
-			}
+					{
+						NONE,
+						ATTACK,
+						RANGED
+					}
 
 	// Icon types
 	enum Icon
-			{
-				NORMAL,
-				DISABLED,
-				MOUSEOVER,
-				NUM_ICONS
-			}
+					{
+						NORMAL,
+						DISABLED,
+						MOUSEOVER,
+						NUM_ICONS
+					}
 
 	// Get some hard-coded information
 
@@ -253,7 +253,7 @@ public class SkillData {
 		return passive;
 	}
 
-	boolean is_attack()
+	public boolean is_attack()
 	{
 		return !passive && (flags & Flags.ATTACK.ordinal()) != 0;
 	}
@@ -263,19 +263,19 @@ public class SkillData {
 		return invisible;
 	}
 
-	int get_masterlevel()
+	public int get_masterlevel()
 	{
 		return masterlevel;
 	}
 
-	Weapon.Type get_required_weapon()
+	public Weapon.Type get_required_weapon()
 	{
 		return reqweapon;
 	}
 	static Stats null_stats = new Stats(0.0f, 0, 0, 0, 0, 0, 0, 0, 0,
 										0, 0.0f, 0.0f, 0.0f, 0.0f,
 										new Rectangle(0,0,0,0));
-	SkillData.Stats get_stats(int level)
+	public SkillData.Stats get_stats(int level)
 	{
 		Stats iter = stats.get(level);
 

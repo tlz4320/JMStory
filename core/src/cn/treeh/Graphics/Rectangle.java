@@ -16,6 +16,12 @@ public class Rectangle {
         lt = node.subNode("lt").getVector();
         rb = node.subNode("rb").getVector();
     }
+    public void shift(int[] v){
+        lt[0] += v[0];
+        lt[1] += v[1];
+        rb[0] += v[0];
+        rb[1] += v[1];
+    }
     public  int left() 
     {
         return lt[0];
@@ -39,9 +45,17 @@ public class Rectangle {
     {
         return lt[0] == rb[0] && lt[1] == rb[1];
     }
+    public boolean empty(){
+        return lt[0] == lt[1] && lt[0] == rb[0] && rb[0] == rb[1];
+    }
     public boolean contains(int[] v) {
         return !straight() &&
                 v[0] >= left() && v[0] <= right() &&
                 v[1] >= top() && v[1] <= bottom();
+    }
+    public boolean overlaps(Rectangle ar){
+        return left() <= ar.right() && right() >= ar.left() &&
+               bottom() <= ar.top() && top() >= ar.bottom();
+
     }
 }

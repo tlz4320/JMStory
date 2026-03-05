@@ -1,5 +1,7 @@
 package cn.treeh.Game.Player.Job;
 
+import java.util.TreeMap;
+
 public class SkillId {
     public enum Id
 		{
@@ -139,10 +141,18 @@ public class SkillId {
 			TRIPLE_THROW(4121007),
 
 			// Bandit
-			MESO_EXPLOSION(4211006);
+			MESO_EXPLOSION(4211006),
+			NONE_ID(-1);
             public int id;
             Id(int i){
                 id = i;
             }
 		}
+	static public TreeMap<Integer, Id> idmap = new TreeMap<>();
+	static{
+
+		 for(Id i : Id.values()){
+			 idmap.put(i.id, i);
+		 }
+	}
 }
